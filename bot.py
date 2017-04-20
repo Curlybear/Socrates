@@ -49,7 +49,7 @@ def getCountryFlag(country_id):
     return data[0]
 
 def getUser(username):
-    c.execute("SELECT * FROM users WHERE username LIKE ?", ['%'+username+'%'])
+    c.execute("SELECT * FROM users WHERE username LIKE ?", [username+'%'])
     data = c.fetchall()
     return data
 
@@ -224,7 +224,7 @@ async def history(ctx):
 
 @history.command(pass_context=True)
 async def cs(ctx, inValue : str):
-    usertext = ''
+    usertext = ['','','','']
     userId = ''
     userName = ''
     if is_number(inValue):
@@ -239,9 +239,9 @@ async def cs(ctx, inValue : str):
             if len(userdata) > 1 and len(userdata) <= 5:
                 i = 1
                 for citizen in userdata:
-                    usertext += str(i) + ') **' + citizen[0] + '** - *' + str(int(citizen[1])) + '*\n'
+                    usertext[0] += str(i) + ') **' + citizen[0] + '** - *' + str(int(citizen[1])) + '*\n'
                     i += 1
-                em = discord.Embed(title='Please enter the number of the targeted citizen', description=usertext, colour=0x3D9900)
+                em = discord.Embed(title='Please enter the number of the targeted citizen', description=usertext[0], colour=0x3D9900)
                 await bot.send_message(ctx.message.channel, '', embed=em)
                 msg = await bot.wait_for_message(author=ctx.message.author)
                 if int(msg.content) >= i or int(msg.content) < 1:
@@ -251,25 +251,32 @@ async def cs(ctx, inValue : str):
                 userName = userdata[int(msg.content) - 1][0]
             else:
                 if len(userdata) > 5:
-                    usertext += '***' + inValue + '*** yields too many results (*'+ str(len(userdata)) +'*).\nPlease specify a more precise username'
+                    usertext[0] += '***' + inValue + '*** yields too many results (*'+ str(len(userdata)) +'*).\nPlease specify a more precise username'
                 if len(userdata) == 0:
-                    usertext += '***' + inValue + '*** doesn\'t match any known citizens.'
+                    usertext[0] += '***' + inValue + '*** doesn\'t match any known citizens.'
 
-                em = discord.Embed(title='Citizen information', description=usertext, colour=0x3D9900)
+                em = discord.Embed(title='Citizen information', description=usertext[0], colour=0x3D9900)
                 await bot.send_message(ctx.message.channel, '', embed=em)
                 return
 
     r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/players/history/cs/'+ userId)
     obj = json.loads(r.text)
-    usertext = ''
+    usertext[0] = ''
+    i = 0
     hists = obj['history'][userId]['cs']
     if len(hists) > 0:
         hists = sorted(hists, key=lambda x: x['added'])
         for hist in hists:
-            usertext += getCountryFlag(hist['country_id_from']) + ' ***' + hist['country_name_from'] + '*** to ' + getCountryFlag(hist['country_id_to']) + ' ***' + hist['country_name_to'] + '*** on ' + hist['added'] + '\n'
+            usertext[i] += getCountryFlag(hist['country_id_from']) + ' ***' + hist['country_name_from'] + '*** to ' + getCountryFlag(hist['country_id_to']) + ' ***' + hist['country_name_to'] + '*** on ' + hist['added'] + '\n'
+            if len(usertext[i]) > 1800:
+                usertext[i] += '...'
+                i += 1
     else:
-        usertext = 'No history to display.'
-    em = discord.Embed(title='Citizen history ('+ userName +')', description=usertext, colour=0x3D9900)
-    await bot.send_message(ctx.message.channel, '', embed=em)
+        usertext[0] = 'No history to display.'
+    i = 0
+    while len(usertext[i]):
+        em = discord.Embed(title='Citizen history ('+ userName +')', description=usertext[i], colour=0x3D9900)
+        await bot.send_message(ctx.message.channel, '', embed=em)
+        i += 1
 
 bot.run(config['DEFAULT']['bot_token'])
