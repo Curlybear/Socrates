@@ -19,7 +19,7 @@ c = conn.cursor()
 apiKey= config['DEFAULT']['api_key']
 
 #Discord.py bot setup
-description = 'Available commands \n !mpp [country name] - Returns a list of mpps for the specified country \n !jobs [number|country name]- Returns the top jobs overall or for a specific country \n !cinfo [country name] - Returns a list of information for the specified country \n\nMore information at https://curlybear.eu/bot \nPowered by erepublik-deutschland.de'
+description = 'Available commands \n !mpp [country name] - Returns a list of mpps for the specified country \n !jobs [number|country name]- Returns the top jobs overall or for a specific country \n !cinfo [country name] - Returns a list of information for the specified country \n !user [username|userid] - Return the information regarding a specified user \n !history [cs|name|mu|party] - Return a specific history of information for a specified user\n\nMore information at https://curlybear.eu/socrates \nPowered by erepublik-deutschland.de'
 
 help_attrs = dict(hidden=True)
 
