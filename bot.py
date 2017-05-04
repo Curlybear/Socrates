@@ -65,6 +65,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+    await bot.change_presence(game=discord.Game(name='eRepublik'))
 
 @bot.command()
 async def getId(inCountry : str):
@@ -213,9 +214,35 @@ async def user(ctx, inValue):
     em = discord.Embed(title='Citizen information ('+ citizen['name'] +')', description=usertext, colour=0x3D9900)
     await bot.send_message(ctx.message.channel, '', embed=em)
 
-@bot.command()
-async def ping():
-    await bot.say('pong')
+@bot.command(pass_context=True)
+async def ping(ctx):
+    em = discord.Embed()
+    em.title = 'TestTitle'
+    em.type = 'rich'
+    em.description = 'Description'
+    em.set_author(name='TestAuthor')
+    em.add_field(name='TestFieldName', value='TestFieldValue')
+    await bot.send_message(ctx.message.channel, '', embed=em)
+
+@bot.command(pass_context=True)
+async def battle(ctx, battleId):
+    r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/battles/details/'+ battleId)
+    obj = json.loads(r.text)
+
+    battleInfo = obj['details'][battleId]
+    battleText = ''
+
+    battleText += '**' + battleInfo['region']['name'] + '** (Round: ' + str(battleInfo['general']['round']) + ')\n'
+    battleText += getCountryFlag(battleInfo['attacker']['id']) + ' **' + battleInfo['attacker']['name'] + '** [*' + str(battleInfo['attacker']['points']) + '*] - ' + getCountryFlag(battleInfo['defender']['id']) + ' **' + battleInfo['defender']['name'] + '** [*' + str(battleInfo['defender']['points']) + '*]\n'
+    battleText += '**[Division 1]**  ***Wall***: *' + str(battleInfo['wall']['1']['attacker'])[0:5] + '* vs *' + str(battleInfo['wall']['1']['defender'])[0:5] + '* - ***Domination***: *' + str(battleInfo['domination']['1']['attacker']) + '* vs *' + str(battleInfo['domination']['1']['defender']) + '*\n'
+    battleText += '**[Division 2]**  ***Wall***: *' + str(battleInfo['wall']['2']['attacker'])[0:5] + '* vs *' + str(battleInfo['wall']['2']['defender'])[0:5] + '* - ***Domination***: *' + str(battleInfo['domination']['2']['attacker']) + '* vs *' + str(battleInfo['domination']['2']['defender']) + '*\n'
+    battleText += '**[Division 3]**  ***Wall***: *' + str(battleInfo['wall']['3']['attacker'])[0:5] + '* vs *' + str(battleInfo['wall']['3']['defender'])[0:5] + '* - ***Domination***: *' + str(battleInfo['domination']['3']['attacker']) + '* vs *' + str(battleInfo['domination']['3']['defender']) + '*\n'
+    battleText += '**[Division 4]**  ***Wall***: *' + str(battleInfo['wall']['4']['attacker'])[0:5] + '* vs *' + str(battleInfo['wall']['4']['defender'])[0:5] + '* - ***Domination***: *' + str(battleInfo['domination']['4']['attacker']) + '* vs *' + str(battleInfo['domination']['4']['defender']) + '*\n'
+
+    battleText += '**Battle link**: https://www.erepublik.com/en/military/battlefield-new/' + str(battleId) + '\n'
+
+    em = discord.Embed(title='Battle information ('+ battleId +')', description=battleText, colour=0xBFF442)
+    await bot.send_message(ctx.message.channel, '', embed=em)
 
 @bot.group(pass_context=True)
 async def history(ctx):
