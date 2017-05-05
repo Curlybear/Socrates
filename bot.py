@@ -224,8 +224,13 @@ async def ping(ctx):
     em.add_field(name='TestFieldName', value='TestFieldValue')
     await bot.send_message(ctx.message.channel, '', embed=em)
 
-@bot.command(pass_context=True)
-async def battle(ctx, battleId):
+@bot.group(pass_context=True)
+async def battle(ctx):
+    if ctx.invoked_subcommand is None:
+        await bot.say('Invalid battle command passed...')
+
+@battle.command(pass_context=True)
+async def info(ctx, battleId):
     r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/battles/details/'+ battleId)
     obj = json.loads(r.text)
 
@@ -242,6 +247,40 @@ async def battle(ctx, battleId):
     battleText += '**Battle link**: https://www.erepublik.com/en/military/battlefield-new/' + str(battleId) + '\n'
 
     em = discord.Embed(title='Battle information ('+ battleId +')', description=battleText, colour=0xBFF442)
+    await bot.send_message(ctx.message.channel, '', embed=em)
+
+@battle.command(pass_context=True)
+async def co(ctx, battleId):
+    r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/battles/details/'+ battleId)
+    obj = json.loads(r.text)
+
+    battleInfo = obj['details'][battleId]
+    battleInfoCO = obj['details'][battleId]['combat_orders']
+    battleText = ''
+
+    battleText += '**' + battleInfo['region']['name'] + '** (Round: ' + str(battleInfo['general']['round']) + ')\n'
+    battleText += getCountryFlag(battleInfo['attacker']['id']) + ' **' + battleInfo['attacker']['name'] + '** [*' + str(battleInfo['attacker']['points']) + '*] - ' + getCountryFlag(battleInfo['defender']['id']) + ' **' + battleInfo['defender']['name'] + '** [*' + str(battleInfo['defender']['points']) + '*]\n\n'
+
+    battleText += '**[Division 1]**\n'
+    if '1' in battleInfoCO:
+        for co in battleInfoCO['1']:
+            battleText += 'Side: ' + getCountryFlag(battleInfoCO['1'][co]['country']['id']) + ' **' + battleInfoCO['1'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['1'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['1'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['1'][co]['wall']) + '*\n'
+    battleText += '\n**[Division 2]**\n'
+    if '2' in battleInfoCO:
+        for co in battleInfoCO['2']:
+            battleText += 'Side: ' + getCountryFlag(battleInfoCO['2'][co]['country']['id']) + ' **' + battleInfoCO['2'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['2'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['2'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['2'][co]['wall']) + '*\n'
+    battleText += '\n**[Division 3]**\n'
+    if '3' in battleInfoCO:
+        for co in battleInfoCO['3']:
+            battleText += 'Side: ' + getCountryFlag(battleInfoCO['3'][co]['country']['id']) + ' **' + battleInfoCO['3'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['3'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['3'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['3'][co]['wall']) + '*\n'
+    battleText += '\n**[Division 4]**\n'
+    if '4' in battleInfoCO:
+        for co in battleInfoCO['4']:
+            battleText += 'Side: ' + getCountryFlag(battleInfoCO['4'][co]['country']['id']) + ' **' + battleInfoCO['4'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['4'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['4'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['4'][co]['wall']) + '*\n'
+
+    battleText += '\n**Battle link**: https://www.erepublik.com/en/military/battlefield-new/' + str(battleId) + '\n'
+
+    em = discord.Embed(title='Battle co information ('+ battleId +')', description=battleText, colour=0xBFF442)
     await bot.send_message(ctx.message.channel, '', embed=em)
 
 @bot.group(pass_context=True)
