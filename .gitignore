@@ -1,3 +1,4 @@
 *.db
 users.csv
 config.ini
+*.log

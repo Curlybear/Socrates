@@ -6,10 +6,26 @@ import json
 import sqlite3
 import datetime
 import configparser
+import logging
 
 #Config reader
 config = configparser.ConfigParser()
 config.read('config.ini')
+
+# Set up logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# create a file handler
+handler = logging.FileHandler('bot.log')
+handler.setLevel(logging.INFO)
+
+# create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# add the handlers to the logger
+logger.addHandler(handler)
 
 #DB Connection setup
 conn = sqlite3.connect(config['DEFAULT']['db_name'])
@@ -65,28 +81,12 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+    logger.info('Bot started as ' + bot.user.name)
     await bot.change_presence(game=discord.Game(name='eRepublik'))
-
-@bot.command()
-async def getId(inCountry : str):
-    await bot.say(getCountryId(inCountry))
-
-@bot.command()
-async def getName(inId : str):
-    await bot.say(getCountryName(inId))
-
-@bot.command()
-async def getFlag(inId : str):
-    await bot.say(getCountryFlag(inId))
-
-@bot.command()
-async def getUserT(inName : str):
-    derp = getUser(inName)
-    await bot.say(len(derp))
-    await bot.say(derp)
 
 @bot.command(pass_context=True)
 async def mpp(ctx, inCountry : str):
+    logger.info('!mpp ' + inCountry + ' - User: ' + str(ctx.message.author))
     try:
         uid = getCountryId(inCountry)
         country = getCountryName(uid)
@@ -102,10 +102,12 @@ async def mpp(ctx, inCountry : str):
         em = discord.Embed(title='MPPs of ' + getCountryFlag(uid) + ' ' +  country + '', description=mpptext, colour=0x0053A9)
         await bot.send_message(ctx.message.channel, '', embed=em)
     except:
+        logger.info('\tCountry ***' + inCountry + '*** not recognized')
         await bot.say('Country ***' + inCountry + '*** not recognized')
 
 @bot.command(pass_context=True)
 async def cinfo(ctx, inCountry : str):
+    logger.info('!cinfo ' + inCountry + ' - User: ' + str(ctx.message.author))
     try:
         uid = getCountryId(inCountry)
         country = getCountryName(uid)
@@ -123,10 +125,12 @@ async def cinfo(ctx, inCountry : str):
         em = discord.Embed(title='Information about '+ getCountryFlag(uid) + ' ' + country + ':', description=admintext + poptext + ecotext, colour=0x0053A9)
         await bot.send_message(ctx.message.channel, '', embed=em)
     except:
+        logger.info('\tCountry ***' + inCountry + '*** not recognized')
         await bot.say('Country ***' + inCountry + '*** not recognized')
 
 @bot.command(pass_context=True)
 async def jobs(ctx, inValue='3'):
+    logger.info('!jobs ' + inValue + ' - User: ' + str(ctx.message.author))
     jobtext = ''
 
     if is_number(inValue):
@@ -155,10 +159,12 @@ async def jobs(ctx, inValue='3'):
             em = discord.Embed(title='Best job offers in ' + getCountryFlag(uid) + ' '+ inValue + ':', description=jobtext, colour=0x0053A9)
             await bot.send_message(ctx.message.channel, '', embed=em)
         except:
+            logger.info('\tCountry ***' + inValue + '*** not recognized')
             await bot.say('Country ***' + inValue + '*** not recognized')
 
 @bot.command(pass_context=True)
 async def user(ctx, inValue):
+    logger.info('!user ' + inValue + ' - User: ' + str(ctx.message.author))
     usertext = ''
     userId = ''
     if is_number(inValue):
@@ -217,6 +223,7 @@ async def user(ctx, inValue):
 
 @bot.command(pass_context=True)
 async def ping(ctx):
+    logger.info('!ping - User: ' + str(ctx.message.author))
     em = discord.Embed()
     em.title = 'TestTitle'
     em.type = 'rich'
@@ -232,6 +239,7 @@ async def battle(ctx):
 
 @battle.command(pass_context=True)
 async def info(ctx, battleId):
+    logger.info('!battle info ' + battleId + ' - User: ' + str(ctx.message.author))
     r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/battles/details/'+ battleId)
     obj = json.loads(r.text)
 
@@ -252,6 +260,7 @@ async def info(ctx, battleId):
 
 @battle.command(pass_context=True)
 async def co(ctx, battleId):
+    logger.info('!battle co ' + battleId + ' - User: ' + str(ctx.message.author))
     r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/battles/details/'+ battleId)
     obj = json.loads(r.text)
 
@@ -291,6 +300,7 @@ async def history(ctx):
 
 @history.command(pass_context=True)
 async def cs(ctx, inValue : str):
+    logger.info('!history cs ' + inValue + ' - User: ' + str(ctx.message.author))
     usertext = ['','','','']
     userId = ''
     userName = ''
@@ -348,6 +358,7 @@ async def cs(ctx, inValue : str):
 
 @history.command(pass_context=True)
 async def name(ctx, inValue : str):
+    logger.info('!history name ' + inValue + ' - User: ' + str(ctx.message.author))
     usertext = ['','','','']
     userId = ''
     userName = ''
@@ -405,6 +416,7 @@ async def name(ctx, inValue : str):
 
 @history.command(pass_context=True)
 async def mu(ctx, inValue : str):
+    logger.info('!history mu ' + inValue + ' - User: ' + str(ctx.message.author))
     usertext = ['','','','']
     userId = ''
     userName = ''
@@ -462,6 +474,7 @@ async def mu(ctx, inValue : str):
 
 @history.command(pass_context=True)
 async def party(ctx, inValue : str):
+    logger.info('!history party ' + inValue + ' - User: ' + str(ctx.message.author))
     usertext = ['','','','']
     userId = ''
     userName = ''
