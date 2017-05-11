@@ -105,7 +105,7 @@ async def mpp(ctx, inCountry : str):
         await bot.say('Country ***' + inCountry + '*** not recognized')
 
 @bot.command(pass_context=True)
-async def cInfo(ctx, inCountry : str):
+async def cinfo(ctx, inCountry : str):
     try:
         uid = getCountryId(inCountry)
         country = getCountryName(uid)
@@ -200,6 +200,7 @@ async def user(ctx, inValue):
     usertext += '**Date registered**: ' + citizen['general']['registered'] + '\n'
     usertext += '**ID**: ' + str(citizen['citizen_id']) + '\n'
     usertext += '**Level**: ' + str(citizen['general']['level']) + '\n'
+    usertext += '**Division**: ' + str(citizen['military']['division']) + '\n'
     usertext += '**Citizenship**: ' + getCountryFlag(citizen['citizenship']['country_id']) + ' ' + citizen['citizenship']['country_name'] + '\n'
     if citizen['military_unit']['name']:
         usertext += '**Military unit**: ' + citizen['military_unit']['name'] + ' ' + 'https://www.erepublik.com/en/military/military-unit/' + str(citizen['military_unit']['id']) + '\n'
