@@ -35,7 +35,7 @@ c = conn.cursor()
 apiKey= config['DEFAULT']['api_key']
 
 #Discord.py bot setup
-description = 'Available commands \n !mpp [country name] - Returns a list of mpps for the specified country \n !jobs [number|country name]- Returns the top jobs overall or for a specific country \n !cinfo [country name] - Returns a list of information for the specified country \n !user [username|userid] - Return the information regarding a specified user \n !history [cs|name|mu|party] - Return a specific history of information for a specified user\n\nMore information at https://curlybear.eu/socrates \nPowered by erepublik-deutschland.de'
+description = 'Available commands \n !mpp [country name] - Returns a list of mpps for the specified country \n !jobs [number|country name]- Returns the top jobs overall or for a specific country \n !cinfo [country name] - Returns a list of information for the specified country \n !user [username|userid] - Return the information regarding a specified user \n !history (cs|name|mu|party) [username|userid] - Return a specific history of information for a specified user \n !battle (info|co) [battleid] - Return the information regarding a specified battle\n\nMore information at https://curlybear.eu/socrates \nPowered by erepublik-deutschland.de'
 
 help_attrs = dict(hidden=True)
 
@@ -130,37 +130,38 @@ async def cinfo(ctx, inCountry : str):
 
 @bot.command(pass_context=True)
 async def jobs(ctx, inValue='3'):
-    logger.info('!jobs ' + inValue + ' - User: ' + str(ctx.message.author))
-    jobtext = ''
+    # logger.info('!jobs ' + inValue + ' - User: ' + str(ctx.message.author))
+    # jobtext = ''
 
-    if is_number(inValue):
-        r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/jobmarket/bestoffers')
-        obj = json.loads(r.text)
-        inValue = int(inValue)
-        if inValue > 5:
-            inValue = 5
-        for i in range(0, inValue):
-            jobtext += getCountryFlag(obj['bestoffers'][i]['country_id']) + ' **' + obj['bestoffers'][i]['country_name'] + '** *' + obj['bestoffers'][i]['citizen_name'] + '*\n| Before work tax: ' + str(obj['bestoffers'][i]['salary'])+ '\n| After work tax: ' + str(obj['bestoffers'][i]['netto']) + '\n'
-        em = discord.Embed(title='Best job offers:', description=jobtext, colour=0x0053A9)
-        await bot.send_message(ctx.message.channel, '', embed=em)
-    if type(inValue) is str:
-        try:
-            nbrOffers = 3
-            uid = getCountryId(inValue)
-            r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/jobmarket/countryoffers/' + str(uid))
-            obj = json.loads(r.text)
-            if len(obj['countryoffers']) == 0:
-                jobtext += '**No offers available**'
-            else:
-                if len(obj['countryoffers'][str(uid)]) < 3:
-                    nbrOffers = len(obj['countryoffers'][str(uid)])
-                for i in range(0, nbrOffers):
-                    jobtext += getCountryFlag(uid) +' **' + obj['countryoffers'][str(uid)][i]['citizen_name'] + '**\n| Before work tax: ' + str(obj['countryoffers'][str(uid)][i]['salary'])+ '\n| After work tax: ' + str(obj['countryoffers'][str(uid)][i]['netto']) + '\n'
-            em = discord.Embed(title='Best job offers in ' + getCountryFlag(uid) + ' '+ inValue + ':', description=jobtext, colour=0x0053A9)
-            await bot.send_message(ctx.message.channel, '', embed=em)
-        except:
-            logger.info('\tCountry ***' + inValue + '*** not recognized')
-            await bot.say('Country ***' + inValue + '*** not recognized')
+    # if is_number(inValue):
+    #     r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/jobmarket/bestoffers')
+    #     obj = json.loads(r.text)
+    #     inValue = int(inValue)
+    #     if inValue > 5:
+    #         inValue = 5
+    #     for i in range(0, inValue):
+    #         jobtext += getCountryFlag(obj['bestoffers'][i]['country_id']) + ' **' + obj['bestoffers'][i]['country_name'] + '** *' + obj['bestoffers'][i]['citizen_name'] + '*\n| Before work tax: ' + str(obj['bestoffers'][i]['salary'])+ '\n| After work tax: ' + str(obj['bestoffers'][i]['netto']) + '\n'
+    #     em = discord.Embed(title='Best job offers:', description=jobtext, colour=0x0053A9)
+    #     await bot.send_message(ctx.message.channel, '', embed=em)
+    # if type(inValue) is str:
+    #     try:
+    #         nbrOffers = 3
+    #         uid = getCountryId(inValue)
+    #         r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/jobmarket/countryoffers/' + str(uid))
+    #         obj = json.loads(r.text)
+    #         if len(obj['countryoffers']) == 0:
+    #             jobtext += '**No offers available**'
+    #         else:
+    #             if len(obj['countryoffers'][str(uid)]) < 3:
+    #                 nbrOffers = len(obj['countryoffers'][str(uid)])
+    #             for i in range(0, nbrOffers):
+    #                 jobtext += getCountryFlag(uid) +' **' + obj['countryoffers'][str(uid)][i]['citizen_name'] + '**\n| Before work tax: ' + str(obj['countryoffers'][str(uid)][i]['salary'])+ '\n| After work tax: ' + str(obj['countryoffers'][str(uid)][i]['netto']) + '\n'
+    #         em = discord.Embed(title='Best job offers in ' + getCountryFlag(uid) + ' '+ inValue + ':', description=jobtext, colour=0x0053A9)
+    #         await bot.send_message(ctx.message.channel, '', embed=em)
+    #     except:
+    #         logger.info('\tCountry ***' + inValue + '*** not recognized')
+    #         await bot.say('Country ***' + inValue + '*** not recognized')
+    await bot.say('Broken at the moment. Visit https://erepublik.tools/marketplace/jobs/0/offers for updated informations on the available jobs.')
 
 @bot.command(pass_context=True)
 async def user(ctx, inValue):
@@ -270,24 +271,27 @@ async def co(ctx, battleId):
 
     battleText += '**' + battleInfo['region']['name'] + '** (Round: ' + str(battleInfo['general']['round']) + ')\n'
     battleText += getCountryFlag(battleInfo['attacker']['id']) + ' **' + battleInfo['attacker']['name'] + '** [*' + str(battleInfo['attacker']['points']) + '*] - ' + getCountryFlag(battleInfo['defender']['id']) + ' **' + battleInfo['defender']['name'] + '** [*' + str(battleInfo['defender']['points']) + '*]\n\n'
-
-    battleText += '**[Division 1]**\n'
     if '1' in battleInfoCO:
-        for co in battleInfoCO['1']:
-            battleText += 'Side: ' + getCountryFlag(battleInfoCO['1'][co]['country']['id']) + ' **' + battleInfoCO['1'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['1'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['1'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['1'][co]['wall']) + '*\n'
-    battleText += '\n**[Division 2]**\n'
-    if '2' in battleInfoCO:
-        for co in battleInfoCO['2']:
-            battleText += 'Side: ' + getCountryFlag(battleInfoCO['2'][co]['country']['id']) + ' **' + battleInfoCO['2'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['2'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['2'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['2'][co]['wall']) + '*\n'
-    battleText += '\n**[Division 3]**\n'
-    if '3' in battleInfoCO:
-        for co in battleInfoCO['3']:
-            battleText += 'Side: ' + getCountryFlag(battleInfoCO['3'][co]['country']['id']) + ' **' + battleInfoCO['3'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['3'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['3'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['3'][co]['wall']) + '*\n'
-    battleText += '\n**[Division 4]**\n'
-    if '4' in battleInfoCO:
-        for co in battleInfoCO['4']:
-            battleText += 'Side: ' + getCountryFlag(battleInfoCO['4'][co]['country']['id']) + ' **' + battleInfoCO['4'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['4'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['4'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['4'][co]['wall']) + '*\n'
-
+        battleText += '**[Division 1]**\n'
+        if '1' in battleInfoCO:
+            for co in battleInfoCO['1']:
+                battleText += 'Side: ' + getCountryFlag(battleInfoCO['1'][co]['country']['id']) + ' **' + battleInfoCO['1'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['1'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['1'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['1'][co]['wall']) + '*\n'
+        battleText += '\n**[Division 2]**\n'
+        if '2' in battleInfoCO:
+            for co in battleInfoCO['2']:
+                battleText += 'Side: ' + getCountryFlag(battleInfoCO['2'][co]['country']['id']) + ' **' + battleInfoCO['2'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['2'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['2'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['2'][co]['wall']) + '*\n'
+        battleText += '\n**[Division 3]**\n'
+        if '3' in battleInfoCO:
+            for co in battleInfoCO['3']:
+                battleText += 'Side: ' + getCountryFlag(battleInfoCO['3'][co]['country']['id']) + ' **' + battleInfoCO['3'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['3'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['3'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['3'][co]['wall']) + '*\n'
+        battleText += '\n**[Division 4]**\n'
+        if '4' in battleInfoCO:
+            for co in battleInfoCO['4']:
+                battleText += 'Side: ' + getCountryFlag(battleInfoCO['4'][co]['country']['id']) + ' **' + battleInfoCO['4'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['4'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['4'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['4'][co]['wall']) + '*\n'
+    if '11' in battleInfoCO:
+        battleText += '**[Aerial round]**\n'
+        for co in battleInfoCO['11']:
+            battleText += 'Side: ' + getCountryFlag(battleInfoCO['11'][co]['country']['id']) + ' **' + battleInfoCO['11'][co]['country']['name'] + '** - Reward: *' + str(battleInfoCO['11'][co]['reward']) + '* - Budget: *' + str(battleInfoCO['11'][co]['budget']) + '* - Wall: *' + str(battleInfoCO['11'][co]['wall']) + '*\n'
     battleText += '\n**Battle link**: https://www.erepublik.com/en/military/battlefield-new/' + str(battleId) + '\n'
 
     em = discord.Embed(title='Battle co information ('+ battleId +')', description=battleText, colour=0xBFF442)
