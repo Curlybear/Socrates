@@ -540,12 +540,12 @@ async def convert(ctx, inValue : str):
         if is_number(inValue):
             delta = datetime.timedelta(days=int(inValue)-1)
             finalDate = startDate + delta
-            em = discord.Embed(title='Test Convert', description='Date : ' + finalDate.strftime('%d/%m/%Y'), colour=0x0053A9)
+            em = discord.Embed(title='Conversion', description='Date : ' + finalDate.strftime('%d/%m/%Y'), colour=0x0053A9)
             await bot.send_message(ctx.message.channel, '', embed=em)
         else:
             inDate = datetime.datetime.strptime(inValue, '%d/%m/%Y')
             erepDay = inDate - startDate + datetime.timedelta(days=1)
-            em = discord.Embed(title='Test Convert', description='eRepublik day : ' + str(erepDay.days), colour=0x0053A9)
+            em = discord.Embed(title='Conversion', description='eRepublik day : ' + str(erepDay.days), colour=0x0053A9)
             await bot.send_message(ctx.message.channel, '', embed=em)
     except:
         traceback.print_exc()
