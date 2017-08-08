@@ -7,6 +7,8 @@ import sqlite3
 import datetime
 import configparser
 import logging
+import sys
+import traceback
 
 #Config reader
 config = configparser.ConfigParser()
@@ -225,12 +227,7 @@ async def user(ctx, inValue):
 @bot.command(pass_context=True)
 async def ping(ctx):
     logger.info('!ping - User: ' + str(ctx.message.author))
-    em = discord.Embed()
-    em.title = 'TestTitle'
-    em.type = 'rich'
-    em.description = 'Description'
-    em.set_author(name='TestAuthor')
-    em.add_field(name='TestFieldName', value='TestFieldValue')
+    em = discord.Embed(title='Pong', description='pong', colour=0x3D9900)
     await bot.send_message(ctx.message.channel, '', embed=em)
 
 @bot.group(pass_context=True)
@@ -533,5 +530,26 @@ async def party(ctx, inValue : str):
         em = discord.Embed(title='Citizen history ('+ userName +')', description=usertext[i], colour=0x3D9900)
         await bot.send_message(ctx.message.channel, '', embed=em)
         i += 1
+
+@bot.command(pass_context=True)
+async def convert(ctx, inValue : str):
+    logger.info('!convert ' + inValue + ' - User: ' + str(ctx.message.author))
+    
+    startDate = datetime.datetime(day=21, month=11, year=2007)
+    try:
+        if is_number(inValue):
+            delta = datetime.timedelta(days=int(inValue)-1)
+            finalDate = startDate + delta
+            em = discord.Embed(title='Test Convert', description='Date : ' + finalDate.strftime('%d/%m/%Y'), colour=0x0053A9)
+            await bot.send_message(ctx.message.channel, '', embed=em)
+        else:
+            inDate = datetime.datetime.strptime(inValue, '%d/%m/%Y')
+            erepDay = inDate - startDate + datetime.timedelta(days=1)
+            em = discord.Embed(title='Test Convert', description='eRepublik day : ' + str(erepDay.days), colour=0x0053A9)
+            await bot.send_message(ctx.message.channel, '', embed=em)
+    except:
+        traceback.print_exc()
+        logger.info('Stuff broke')
+        await bot.say('Stuff broke')
 
 bot.run(config['DEFAULT']['bot_token'])
