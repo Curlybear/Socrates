@@ -76,7 +76,7 @@ def getUserId(id):
     data = c.fetchall()
     return data
 
-#Commands
+#Events
 @bot.event
 async def on_ready():
     print('Logged in as')
@@ -84,9 +84,19 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     logger.info('Bot started as ' + bot.user.name)
+    for server in bot.servers:
+        logger.info('   ' + server.name)
     await bot.change_presence(game=discord.Game(name='eRepublik'))
 
+@bot.event
+async def on_server_join(server):
+    logger.info('Bot joined: ' + server.name)
 
+@bot.event
+async def on_server_remove(server):
+    logger.info('Bot left: ' + server.name)
+
+#Commands
 @bot.command(pass_context=True)
 async def help(ctx):
     logger.info('!help - User: ' + str(ctx.message.author))
