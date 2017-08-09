@@ -96,6 +96,12 @@ async def on_server_join(server):
 async def on_server_remove(server):
     logger.info('Bot left: ' + server.name)
 
+@bot.event
+async def on_message(message):
+    if bot.user in message.mentions:
+        await bot.add_reaction(message, '❤')
+        logger.info('Mentionned by ' + message.author.name)
+
 #Commands
 @bot.command(pass_context=True)
 async def help(ctx):
