@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import configparser
 import logging
-
+import check
 
 # Config reader
 config = configparser.ConfigParser()
@@ -38,6 +38,7 @@ startup_extensions = ["misc", "country", "user", "battle"]
 
 
 @bot.command()
+@check.is_owner()
 async def load(extension_name : str):
     """Loads an extension."""
     try:
@@ -49,6 +50,7 @@ async def load(extension_name : str):
 
 
 @bot.command()
+@check.is_owner()
 async def unload(extension_name : str):
     """Unloads an extension."""
     bot.unload_extension(extension_name)
