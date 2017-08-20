@@ -22,12 +22,12 @@ class Battle:
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
-    @commands.group(pass_context=True)
+    @commands.group(pass_context=True, aliases=['BATTLE'])
     async def battle(self, ctx):
         if ctx.invoked_subcommand is None:
             await self.bot.say('Invalid battle command passed...')
 
-    @battle.command(pass_context=True)
+    @battle.command(pass_context=True, aliases=['INFO'])
     async def info(self, ctx, battle_id):
         logger.info('!battle info ' + battle_id + ' - User: ' + str(ctx.message.author))
         r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/battles/details/' + battle_id)
@@ -67,7 +67,7 @@ class Battle:
         em = discord.Embed(title='Battle information (' + battle_id + ')', description=battle_text, colour=0xBFF442)
         await self.bot.send_message(ctx.message.channel, '', embed=em)
 
-    @battle.command(pass_context=True)
+    @battle.command(pass_context=True, aliases=['CO'])
     async def co(self, ctx, battle_id):
         logger.info('!battle co ' + battle_id + ' - User: ' + str(ctx.message.author))
         r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/battles/details/' + battle_id)

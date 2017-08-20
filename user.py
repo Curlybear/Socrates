@@ -22,8 +22,8 @@ class User:
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
-    @commands.command(pass_context=True)
-    async def user(self, ctx, in_value):
+    @commands.command(pass_context=True, aliases=['USER'])
+    async def user(self, ctx, *, in_value):
         logger.info('!user ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ''
         user_id = ''
@@ -34,7 +34,7 @@ class User:
             if len(user_data) == 1:
                 user_id = str(int(user_data[0][1]))
             else:
-                if 1 < len(user_data) <= 5:
+                if 1 < len(user_data) <= 10:
                     # Display all results then await choice
                     i = 1
                     for citizen in user_data:
@@ -89,13 +89,13 @@ class User:
                            colour=0x3D9900)
         await self.bot.send_message(ctx.message.channel, '', embed=em)
 
-    @commands.group(pass_context=True)
+    @commands.group(pass_context=True, aliases=['HISTORY'])
     async def history(self, ctx):
         if ctx.invoked_subcommand is None:
             await self.bot.say('Invalid history command passed...')
 
-    @history.command(pass_context=True)
-    async def cs(self, ctx, in_value: str):
+    @history.command(pass_context=True, aliases=['CS'])
+    async def cs(self, ctx, *, in_value: str):
         logger.info('!history cs ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ['', '', '', '']
         user_id = ''
@@ -158,8 +158,8 @@ class User:
             await self.bot.send_message(ctx.message.channel, '', embed=em)
             i += 1
 
-    @history.command(pass_context=True)
-    async def name(self, ctx, in_value: str):
+    @history.command(pass_context=True, aliases=['NAME'])
+    async def name(self, ctx, *, in_value: str):
         logger.info('!history name ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ['', '', '', '']
         user_id = ''
@@ -220,8 +220,8 @@ class User:
             await self.bot.send_message(ctx.message.channel, '', embed=em)
             i += 1
 
-    @history.command(pass_context=True)
-    async def mu(self, ctx, in_value: str):
+    @history.command(pass_context=True, aliases=['MU'])
+    async def mu(self, ctx, *, in_value: str):
         logger.info('!history mu ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ['', '', '', '']
         user_id = ''
@@ -288,8 +288,8 @@ class User:
             await self.bot.send_message(ctx.message.channel, '', embed=em)
             i += 1
 
-    @history.command(pass_context=True)
-    async def party(self, ctx, in_value: str):
+    @history.command(pass_context=True, aliases=['PARTY'])
+    async def party(self, ctx, *, in_value: str):
         logger.info('!history party ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ['', '', '', '']
         user_id = ''

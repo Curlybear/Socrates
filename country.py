@@ -22,8 +22,8 @@ class Country:
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
-    @commands.command(pass_context=True)
-    async def mpp(self, ctx, in_country: str):
+    @commands.command(pass_context=True, aliases=['MPP'])
+    async def mpp(self, ctx, *, in_country: str):
         logger.info('!mpp ' + in_country + ' - User: ' + str(ctx.message.author))
         try:
             uid = self.utils.get_country_id(in_country)
@@ -45,8 +45,8 @@ class Country:
             logger.info('\tCountry ***' + in_country + '*** not recognized')
             await self.bot.say('Country ***' + in_country + '*** not recognized')
 
-    @commands.command(pass_context=True)
-    async def cinfo(self, ctx, in_country: str):
+    @commands.command(pass_context=True, aliases=['CINFO'])
+    async def cinfo(self, ctx, *, in_country: str):
         logger.info('!cinfo ' + in_country + ' - User: ' + str(ctx.message.author))
         try:
             uid = self.utils.get_country_id(in_country)

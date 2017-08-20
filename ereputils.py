@@ -37,3 +37,15 @@ class ErepUtils:
     def get_user_id(self, id):
         data = self.db.queryall("SELECT * FROM users WHERE id = ?", [id])
         return data
+
+    def search_wiki(self, query):
+        data = self.db.queryall("SELECT * FROM wiki WHERE tag LIKE ?", ['%'+query+'%'])
+        return data
+
+    def get_wiki_categories(self):
+        data = self.db.queryall("SELECT DISTINCT category FROM wiki", [])
+        return data
+
+    def get_wiki_entries_for_category(self, category):
+        data = self.db.queryall("SELECT DISTINCT tag FROM wiki WHERE category LIKE ?", [category+'%'])
+        return data
