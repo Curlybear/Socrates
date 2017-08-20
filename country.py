@@ -35,6 +35,7 @@ class Country:
             if not mpps:
                 mpp_text += '**No MPPs**'
             else:
+                mpps.sort(key = lambda x: x['expires'][0:10])
                 for mpp in mpps:
                     mpp_text += self.utils.get_country_flag(mpp['country_id']) + ' **' + self.utils.get_country_name(
                         mpp['country_id']) + '** - ' + mpp['expires'][0:10] + '\n'
