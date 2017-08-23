@@ -1,8 +1,12 @@
 import sqlite3
 import csv
-import re
+import configparser
 
-conn = sqlite3.connect('erep.db')
+# Config reader
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+conn = sqlite3.connect(config['DEFAULT']['db_name'])
 c = conn.cursor()
 
 c.execute('CREATE TABLE users(username TEXT, id REAL, discordusername TEXT, PRIMARY KEY(username))')
