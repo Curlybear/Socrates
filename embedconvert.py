@@ -527,7 +527,7 @@ embed.set_thumbnail(url='http://wiki.erepublik.com/images/1/11/Flag-Orion.jpg')
 embed.add_field(name="Formation", value="2713", inline=False)
 embed.add_field(name="Disbanded", value="Still running", inline=False)
 embed.add_field(name="All time members", value="11", inline=False)
-embed.add_field(name="Founders", value=":flag_ca: Canada - :flag_fr: France - :flag_co: Colombia - :flag_ir: Iran - :flag_pr: Peru - :flag_se: Sweden", inline=False)
+embed.add_field(name="Founders", value=":flag_ca: Canada - :flag_fr: France - :flag_co: Colombia - :flag_ir: Iran - :flag_pe: Peru - :flag_se: Sweden", inline=False)
 embed.add_field(name="Other members", value=":flag_nl: Netherlands - :flag_lt: Lithuania - :flag_cu: Cuba - :flag_gb: United Kingdom - :flag_ee: Estonia", inline=False)
 
 embeds.append(embed)
@@ -543,7 +543,7 @@ embed.add_field(name="Other members", value=":flag_cz: Czech Republic - :flag_uy
 
 embeds.append(embed)
 
-embed=discord.Embed(title="Pacifca", url='http://wiki.erepublik.com/index.php/Pacifica_(alliance)', description="It was a medium-size alliance until Poland and Hungary joined it in April 2016, which then turned it into one of the major alliances in the game. It has mostly followed the path of neutrality between Asteria and Syndicate since, keeping MPPs with both sides and avoiding major conflicts", color=0xdf0005)
+embed=discord.Embed(title="Pacifica", url='http://wiki.erepublik.com/index.php/Pacifica_(alliance)', description="It was a medium-size alliance until Poland and Hungary joined it in April 2016, which then turned it into one of the major alliances in the game. It has mostly followed the path of neutrality between Asteria and Syndicate since, keeping MPPs with both sides and avoiding major conflicts", color=0xdf0005)
 embed.set_author(name="azaraliiii#4764", url='https://discordapp.com/channels/@me/344531696479109120', icon_url='http://forum.erepfrance.com/download/file.php?avatar=8004_1497794429.png')
 embed.set_thumbnail(url='http://wiki.erepublik.com/images/0/02/Flag-Pacifica.jpg')
 embed.add_field(name="Formation", value="2403", inline=False)
@@ -561,7 +561,7 @@ embed.add_field(name="Formation", value="2275", inline=False)
 embed.add_field(name="Disbanded", value="Still running", inline=False)
 embed.add_field(name="All time members", value="12", inline=False)
 embed.add_field(name="Founders", value=":flag_ar: Argentina - :flag_gr: Greece - :flag_hu: Hungary - :flag_ro: Romania - :flag_rs: Serbia - :flag_si: Slovenia", inline=False)
-embed.add_field(name="Other members", value=":flag_cn: China - :flag_br: Brazil - :flag_pt: Portugal - :flag_pr: Peru - :flag_ir: Iran - :flag_lt: Lithuania", inline=False)
+embed.add_field(name="Other members", value=":flag_cn: China - :flag_br: Brazil - :flag_pt: Portugal - :flag_pe: Peru - :flag_ir: Iran - :flag_lt: Lithuania", inline=False)
 
 embeds.append(embed)
 
