@@ -1,5 +1,6 @@
 import datetime
 import traceback
+import check
 
 import discord
 from discord.ext import commands
@@ -86,6 +87,12 @@ class Misc:
         logger.info('!' + str(ctx.invoked_subcommand) + ' - User: ' + str(ctx.message.author))
         await self.bot.send_message(ctx.message.channel, 'To invite me to your own server click the following link: <https://discordapp.com/oauth2/authorize?client_id=304725683995934723&scope=bot&permissions=0>')
 
+    @commands.command(pass_context=True, aliases=['ANNOUNCEMENT'])
+    @check.is_authorized_staff()
+    async def announcement(self, ctx, *, message: str):
+        logger.info('!announcement ' + message + ' - User: ' + str(ctx.message.author))
+        for server in self.bot.servers:
+            await self.bot.send_message(server, message + '\n\nSent by: *' + str(ctx.message.author) + '*')
 
 def setup(bot):
     bot.add_cog(Misc(bot))
