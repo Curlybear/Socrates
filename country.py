@@ -4,6 +4,8 @@ import configparser
 import logging
 import requests
 import json
+from PythonGists import PythonGists
+import datetime
 
 import ereputils
 
@@ -45,6 +47,25 @@ class Country:
         except:
             logger.info('\tCountry ***' + in_country + '*** not recognized')
             await self.bot.say('Country ***' + in_country + '*** not recognized')
+
+    @commands.command(pass_context=True, aliases=['MPPSRAW'])
+    async def mppsraw(self, ctx):
+        logger.info('!mppsraw - User: ' + str(ctx.message.author))
+        mpp_text = ''
+        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/countries/details/all')
+        obj = json.loads(r.text)
+        for country in obj['countries']:
+            mpps = obj['countries'][country]['military']['mpps']
+            if mpps:
+                mpps.sort(key=lambda x: x['expires'][0:10])
+                for mpp in mpps:
+                    mpp_text += self.utils.get_country_name(country) + ';' + self.utils.get_country_name(
+                        mpp['country_id']) + ';' + mpp['expires'][0:10] + '\n'
+
+        link = PythonGists.Gist(description='eRepublik MPPs', content=mpp_text, name='mpps' + datetime.datetime.now().strftime("%d-%m-%Y") + '.csv')
+        em = discord.Embed(title='All MPPs',
+                           description=link, colour=0x0042B9)
+        await self.bot.send_message(ctx.message.channel, '', embed=em)
 
     @commands.command(pass_context=True, aliases=['CINFO'])
     async def cinfo(self, ctx, *, in_country: str):
