@@ -22,25 +22,26 @@ class User:
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
-    @commands.command(pass_context=True, aliases=['USER'])
-    async def user(self, ctx, *, in_value):
-        logger.info('!user ' + in_value + ' - User: ' + str(ctx.message.author))
+    async def find_user(self, ctx, in_value):
         user_text = ''
         user_id = ''
+        user_name = ''
         if self.utils.is_number(in_value):
-            user_id += str(int(in_value))
+            user_id = str(int(in_value))
+            user_name = (self.utils.get_user_id(user_id))[0][0]
         else:
             user_data = self.utils.get_user(in_value)
             if len(user_data) == 1:
                 user_id = str(int(user_data[0][1]))
+                user_name = user_data[0][0]
             else:
-                if 1 < len(user_data) <= 10:
-                    # Display all results then await choice
+                if 1 < len(user_data) <= 9:
                     i = 1
                     for citizen in user_data:
                         user_text += str(i) + ') **' + citizen[0] + '** - *' + str(int(citizen[1])) + '*\n'
                         i += 1
-                    em = discord.Embed(title='Please enter the number of the targeted citizen', description=user_text,
+                    em = discord.Embed(title='Please enter the number of the targeted citizen',
+                                       description=user_text,
                                        colour=0x3D9900)
                     await self.bot.send_message(ctx.message.channel, '', embed=em)
                     msg = await self.bot.wait_for_message(author=ctx.message.author)
@@ -48,8 +49,9 @@ class User:
                         await self.bot.say('Invalid choice')
                         return
                     user_id = str(int(user_data[int(msg.content) - 1][1]))
+                    user_name = user_data[int(msg.content) - 1][0]
                 else:
-                    if len(user_data) > 5:
+                    if len(user_data) > 9:
                         user_text += '***' + in_value + '*** yields too many results (*' + str(
                             len(user_data)) + '*).\nPlease specify a more precise username'
                     if len(user_data) == 0:
@@ -58,11 +60,22 @@ class User:
                     em = discord.Embed(title='Citizen information', description=user_text, colour=0x3D9900)
                     await self.bot.send_message(ctx.message.channel, '', embed=em)
                     return
+        return user_id, user_name
 
-        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/details/' + user_id)
+    @commands.command(pass_context=True, aliases=['USER'])
+    async def user(self, ctx, *, in_value):
+        logger.info('!user ' + in_value + ' - User: ' + str(ctx.message.author))
+
+        found_user = await self.find_user(ctx, in_value)
+        if not found_user:
+            return
+
+        logger.info(found_user)
+
+        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/details/' + found_user[0])
         obj = json.loads(r.text)
 
-        citizen = obj['players'][user_id]
+        citizen = obj['players'][found_user[0]]
 
         user_text = '**Status**: ' + ('Alive' if citizen['general']['is_alive'] else 'Dead') + '\n'
         user_text += '**Date registered**: ' + citizen['general']['registered'] + '\n'
@@ -98,48 +111,16 @@ class User:
     async def cs(self, ctx, *, in_value: str):
         logger.info('!history cs ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ['', '', '', '']
-        user_id = ''
-        user_name = ''
-        if self.utils.is_number(in_value):
-            user_id = str(int(in_value))
-            user_name = (self.utils.get_user_id(user_id))[0][0]
-        else:
-            user_data = self.utils.get_user(in_value)
-            if len(user_data) == 1:
-                user_id = str(int(user_data[0][1]))
-                user_name = user_data[0][0]
-            else:
-                if 1 < len(user_data) <= 5:
-                    i = 1
-                    for citizen in user_data:
-                        user_text[0] += str(i) + ') **' + citizen[0] + '** - *' + str(int(citizen[1])) + '*\n'
-                        i += 1
-                    em = discord.Embed(title='Please enter the number of the targeted citizen',
-                                       description=user_text[0],
-                                       colour=0x3D9900)
-                    await self.bot.send_message(ctx.message.channel, '', embed=em)
-                    msg = await self.bot.wait_for_message(author=ctx.message.author)
-                    if int(msg.content) >= i or int(msg.content) < 1:
-                        await self.bot.say('Invalid choice')
-                        return
-                    user_id = str(int(user_data[int(msg.content) - 1][1]))
-                    user_name = user_data[int(msg.content) - 1][0]
-                else:
-                    if len(user_data) > 5:
-                        user_text[0] += '***' + in_value + '*** yields too many results (*' + str(
-                            len(user_data)) + '*).\nPlease specify a more precise username'
-                    if len(user_data) == 0:
-                        user_text[0] += '***' + in_value + '*** doesn\'t match any known citizens.'
 
-                    em = discord.Embed(title='Citizen history', description=user_text[0], colour=0x3D9900)
-                    await self.bot.send_message(ctx.message.channel, '', embed=em)
-                    return
+        found_user = await self.find_user(ctx, in_value)
+        if not found_user:
+            return
 
-        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/history/cs/' + user_id)
+        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/history/cs/' + found_user[0])
         obj = json.loads(r.text)
         user_text[0] = ''
         i = 0
-        hists = obj['history'][user_id]['cs']
+        hists = obj['history'][found_user[0]]['cs']
         if len(hists) > 0:
             hists = sorted(hists, key=lambda x: x['added'])
             for hist in hists:
@@ -153,7 +134,7 @@ class User:
             user_text[0] = 'No history to display.'
         i = 0
         while len(user_text[i]):
-            em = discord.Embed(title='Citizen CS history (' + user_name + ')', description=user_text[i],
+            em = discord.Embed(title='Citizen CS history (' + found_user[1] + ')', description=user_text[i],
                                colour=0x3D9900)
             await self.bot.send_message(ctx.message.channel, '', embed=em)
             i += 1
@@ -162,48 +143,16 @@ class User:
     async def name(self, ctx, *, in_value: str):
         logger.info('!history name ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ['', '', '', '']
-        user_id = ''
-        user_name = ''
-        if self.utils.is_number(in_value):
-            user_id = str(int(in_value))
-            user_name = (self.utils.get_user_id(user_id))[0][0]
-        else:
-            user_data = self.utils.get_user(in_value)
-            if len(user_data) == 1:
-                user_id = str(int(user_data[0][1]))
-                user_name = user_data[0][0]
-            else:
-                if 1 < len(user_data) <= 5:
-                    i = 1
-                    for citizen in user_data:
-                        user_text[0] += str(i) + ') **' + citizen[0] + '** - *' + str(int(citizen[1])) + '*\n'
-                        i += 1
-                    em = discord.Embed(title='Please enter the number of the targeted citizen',
-                                       description=user_text[0],
-                                       colour=0x3D9900)
-                    await self.bot.send_message(ctx.message.channel, '', embed=em)
-                    msg = await self.bot.wait_for_message(author=ctx.message.author)
-                    if int(msg.content) >= i or int(msg.content) < 1:
-                        await self.bot.say('Invalid choice')
-                        return
-                    user_id = str(int(user_data[int(msg.content) - 1][1]))
-                    user_name = user_data[int(msg.content) - 1][0]
-                else:
-                    if len(user_data) > 5:
-                        user_text[0] += '***' + in_value + '*** yields too many results (*' + str(
-                            len(user_data)) + '*).\nPlease specify a more precise username'
-                    if len(user_data) == 0:
-                        user_text[0] += '***' + in_value + '*** doesn\'t match any known citizens.'
 
-                    em = discord.Embed(title='Citizen Name history', description=user_text[0], colour=0x3D9900)
-                    await self.bot.send_message(ctx.message.channel, '', embed=em)
-                    return
+        found_user = await self.find_user(ctx, in_value)
+        if not found_user:
+            return
 
-        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/history/name/' + user_id)
+        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/history/name/' + found_user[0])
         obj = json.loads(r.text)
         user_text[0] = ''
         i = 0
-        hists = obj['history'][user_id]['name']
+        hists = obj['history'][found_user[0]]['name']
         if len(hists) > 0:
             hists = sorted(hists, key=lambda x: x['added'])
             for hist in hists:
@@ -216,7 +165,7 @@ class User:
             user_text[0] = 'No history to display.'
         i = 0
         while len(user_text[i]):
-            em = discord.Embed(title='Citizen history (' + user_name + ')', description=user_text[i], colour=0x3D9900)
+            em = discord.Embed(title='Citizen history (' + found_user[1] + ')', description=user_text[i], colour=0x3D9900)
             await self.bot.send_message(ctx.message.channel, '', embed=em)
             i += 1
 
@@ -224,48 +173,16 @@ class User:
     async def mu(self, ctx, *, in_value: str):
         logger.info('!history mu ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ['', '', '', '']
-        user_id = ''
-        user_name = ''
-        if self.utils.is_number(in_value):
-            user_id = str(int(in_value))
-            user_name = (self.utils.get_user_id(user_id))[0][0]
-        else:
-            user_data = self.utils.get_user(in_value)
-            if len(user_data) == 1:
-                user_id = str(int(user_data[0][1]))
-                user_name = user_data[0][0]
-            else:
-                if 1 < len(user_data) <= 5:
-                    i = 1
-                    for citizen in user_data:
-                        user_text[0] += str(i) + ') **' + citizen[0] + '** - *' + str(int(citizen[1])) + '*\n'
-                        i += 1
-                    em = discord.Embed(title='Please enter the number of the targeted citizen',
-                                       description=user_text[0],
-                                       colour=0x3D9900)
-                    await self.bot.send_message(ctx.message.channel, '', embed=em)
-                    msg = await self.bot.wait_for_message(author=ctx.message.author)
-                    if int(msg.content) >= i or int(msg.content) < 1:
-                        await self.bot.say('Invalid choice')
-                        return
-                    user_id = str(int(user_data[int(msg.content) - 1][1]))
-                    user_name = user_data[int(msg.content) - 1][0]
-                else:
-                    if len(user_data) > 5:
-                        user_text[0] += '***' + in_value + '*** yields too many results (*' + str(
-                            len(user_data)) + '*).\nPlease specify a more precise username'
-                    if len(user_data) == 0:
-                        user_text[0] += '***' + in_value + '*** doesn\'t match any known citizens.'
 
-                    em = discord.Embed(title='MU history', description=user_text[0], colour=0x3D9900)
-                    await self.bot.send_message(ctx.message.channel, '', embed=em)
-                    return
+        found_user = await self.find_user(ctx, in_value)
+        if not found_user:
+            return
 
-        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/history/mu/' + user_id)
+        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/history/mu/' + found_user[0])
         obj = json.loads(r.text)
         user_text[0] = ''
         i = 0
-        hists = obj['history'][user_id]['mu']
+        hists = obj['history'][found_user[0]]['mu']
         if len(hists) > 0:
             hists = sorted(hists, key=lambda x: x['added'])
             for hist in hists:
@@ -284,7 +201,7 @@ class User:
             user_text[0] = 'No history to display.'
         i = 0
         while len(user_text[i]):
-            em = discord.Embed(title='Citizen history (' + user_name + ')', description=user_text[i], colour=0x3D9900)
+            em = discord.Embed(title='Citizen history (' + found_user[1] + ')', description=user_text[i], colour=0x3D9900)
             await self.bot.send_message(ctx.message.channel, '', embed=em)
             i += 1
 
@@ -292,47 +209,16 @@ class User:
     async def party(self, ctx, *, in_value: str):
         logger.info('!history party ' + in_value + ' - User: ' + str(ctx.message.author))
         user_text = ['', '', '', '']
-        user_id = ''
-        user_name = ''
-        if self.utils.is_number(in_value):
-            user_id = str(int(in_value))
-            user_name = (self.utils.get_user_id(user_id))[0][0]
-        else:
-            user_data = self.utils.get_user(in_value)
-            if len(user_data) == 1:
-                user_id = str(int(user_data[0][1]))
-                user_name = user_data[0][0]
-            else:
-                if 1 < len(user_data) <= 5:
-                    i = 1
-                    for citizen in user_data:
-                        user_text[0] += str(i) + ') **' + citizen[0] + '** - *' + str(int(citizen[1])) + '*\n'
-                        i += 1
-                    em = discord.Embed(title='Please enter the number of the targeted citizen', description=user_text[0],
-                                       colour=0x3D9900)
-                    await self.bot.send_message(ctx.message.channel, '', embed=em)
-                    msg = await self.bot.wait_for_message(author=ctx.message.author)
-                    if int(msg.content) >= i or int(msg.content) < 1:
-                        await self.bot.say('Invalid choice')
-                        return
-                    user_id = str(int(user_data[int(msg.content) - 1][1]))
-                    user_name = user_data[int(msg.content) - 1][0]
-                else:
-                    if len(user_data) > 5:
-                        user_text[0] += '***' + in_value + '*** yields too many results (*' + str(
-                            len(user_data)) + '*).\nPlease specify a more precise username'
-                    if len(user_data) == 0:
-                        user_text[0] += '***' + in_value + '*** doesn\'t match any known citizens.'
 
-                    em = discord.Embed(title='Party history', description=user_text[0], colour=0x3D9900)
-                    await self.bot.send_message(ctx.message.channel, '', embed=em)
-                    return
+        found_user = await self.find_user(ctx, in_value)
+        if not found_user:
+            return
 
-        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/history/party/' + user_id)
+        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/history/party/' + found_user[0])
         obj = json.loads(r.text)
         user_text[0] = ''
         i = 0
-        hists = obj['history'][user_id]['party']
+        hists = obj['history'][found_user[0]]['party']
         if len(hists) > 0:
             hists = sorted(hists, key=lambda x: x['added'])
             for hist in hists:
@@ -350,7 +236,7 @@ class User:
             user_text[0] = 'No history to display.'
         i = 0
         while len(user_text[i]):
-            em = discord.Embed(title='Citizen history (' + user_name + ')', description=user_text[i], colour=0x3D9900)
+            em = discord.Embed(title='Citizen history (' + found_user[1] + ')', description=user_text[i], colour=0x3D9900)
             await self.bot.send_message(ctx.message.channel, '', embed=em)
             i += 1
 
