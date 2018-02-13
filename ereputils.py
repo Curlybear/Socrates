@@ -20,7 +20,7 @@ class ErepUtils:
 
     def get_country_id(self, country_name):
         country_name = country_name.replace('_', '\_').replace('%', '\%').replace('?', '\?').replace('*', '\*')
-        data = self.db.queryone("SELECT id FROM countries WHERE name LIKE ? ESCAPE '\'", ['%'+country_name+'%'])
+        data = self.db.queryone("SELECT id FROM countries WHERE name LIKE ? ESCAPE '\\'", ['%'+country_name+'%'])
         return int(data[0])
 
     def get_country_name(self, country_id):
@@ -33,7 +33,7 @@ class ErepUtils:
 
     def get_user(self, username):
         username = username.replace('_', '\_').replace('%', '\%').replace('?', '\?').replace('*', '\*')
-        data = self.db.queryall("SELECT * FROM users WHERE username LIKE ? ESCAPE '\'", [username+'%'])
+        data = self.db.queryall("SELECT * FROM users WHERE username LIKE ? ESCAPE '\\'", [username+'%'])
         return data
 
     def get_user_id(self, id):
@@ -42,7 +42,7 @@ class ErepUtils:
 
     def search_wiki(self, query):
         query = query.replace('_', '\_').replace('%', '\%').replace('?', '\?').replace('*', '\*')
-        data = self.db.queryall("SELECT * FROM wiki WHERE tag LIKE ? ESCAPE '\'", ['%'+query+'%'])
+        data = self.db.queryall("SELECT * FROM wiki WHERE tag LIKE ? ESCAPE '\\'", ['%'+query+'%'])
         return data
 
     def get_wiki_categories(self):
@@ -51,5 +51,5 @@ class ErepUtils:
 
     def get_wiki_entries_for_category(self, category):
         category = category.replace('_', '\_').replace('%', '\%').replace('?', '\?').replace('*', '\*')
-        data = self.db.queryall("SELECT DISTINCT tag FROM wiki WHERE category LIKE ? ESCAPE '\'", [category+'%'])
+        data = self.db.queryall("SELECT DISTINCT tag FROM wiki WHERE category LIKE ? ESCAPE '\\'", [category+'%'])
         return data
