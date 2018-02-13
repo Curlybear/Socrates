@@ -576,6 +576,16 @@ embed.add_field(name="Other members", value=":flag_ar: Argentina - :flag_py: Par
 
 embeds.append(embed)
 
+embed=discord.Embed(title="ADC", url="http://wiki.erepublik.com/index.php/Alliance_of_Developing_Countries", description="The Alliance of Developing Countries (abbr. 'ADC') is a military alliance consisting of small countries that are not formally aligned with or against any major power bloc.", color=0x2ec4de)
+embed.set_author(name="azaraliiii#4764", url='https://discordapp.com/channels/@me/344531696479109120', icon_url='http://forum.erepfrance.com/download/file.php?avatar=8004_1497794429.png')
+embed.set_thumbnail(url="http://wiki.erepublik.com/images/6/67/Flag-Alliance_of_Developing_Countries.png")
+embed.add_field(name="Formation", value="3661", inline=False)
+embed.add_field(name="Disbanded", value="Still running", inline=False)
+embed.add_field(name="All time members", value="2", inline=False)
+embed.add_field(name="Founders", value=":flag_ch: switzerland - :flag_md: Moldova", inline=False)
+
+embeds.append(embed)
+
 jsonembeds = []
 
 for em in embeds:
