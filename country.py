@@ -31,6 +31,7 @@ class Country:
             uid = self.utils.get_country_id(in_country)
             country = self.utils.get_country_name(uid)
             mpp_text = ''
+            expiration_text = ''
             r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/countries/details/' + str(uid))
             obj = json.loads(r.text)
             mpps = obj['countries'][str(uid)]['military']['mpps']
@@ -40,10 +41,16 @@ class Country:
                 mpps.sort(key = lambda x: x['expires'][0:10])
                 for mpp in mpps:
                     mpp_text += self.utils.get_country_flag(mpp['country_id']) + ' **' + self.utils.get_country_name(
-                        mpp['country_id']) + '** - ' + mpp['expires'][0:10] + '\n'
-            em = discord.Embed(title='MPPs of ' + self.utils.get_country_flag(uid) + ' ' + country + '',
-                               description=mpp_text, colour=0x0053A9)
-            await self.bot.send_message(ctx.message.channel, '', embed=em)
+                        mpp['country_id']) + '**' + '\n'
+
+                    expiration_text += ':small_blue_diamond: ' + mpp['expires'][0:10] + '\n'
+
+            embed = discord.Embed(colour=discord.Colour(0xce2c19))
+            embed.set_author(name=country + " Mutual Protection Pacts", icon_url='https://static.erepublik.tools/assets/img/erepublik/country/' + str(uid) + '.gif')
+
+            embed.add_field(name="Country", value=mpp_text, inline=True)
+            embed.add_field(name="Expiration date", value=expiration_text, inline=True)
+            await self.bot.send_message(ctx.message.channel, '', embed=embed)
         except:
             logger.info('\tCountry ***' + in_country + '*** not recognized')
             await self.bot.say('Country ***' + in_country + '*** not recognized')
@@ -75,28 +82,24 @@ class Country:
             country = self.utils.get_country_name(uid)
             r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/countries/details/' + str(uid))
             obj = json.loads(r.text)
-            pop_text = '**Population:** *' + str(obj['countries'][str(uid)]['population']['total']) + '* citizens\n'
-            eco_text = '**Economy:** \n**CC:** *' + str(
-                obj['countries'][str(uid)]['economy']['cc']) + '* \n**Gold:** *' + str(
-                obj['countries'][str(uid)]['economy']['gold']) + '* \n**Average salary:** *' + str(
-                obj['countries'][str(uid)]['economy']['salary_average']) + '* \n'
-            admin_text = '**Administration:** \n'
+
+            embed = discord.Embed(colour=discord.Colour(0xce2c19))
+            embed.set_author(name=country + " Information", icon_url='https://static.erepublik.tools/assets/img/erepublik/country/' + str(uid) + '.gif')
+
+            embed.add_field(name='Administration', value='--------------------------------------', inline=False)
             if obj['countries'][str(uid)]['administration']['dictator']['id']:
-                admin_text += '**Dictator:** *' + obj['countries'][str(uid)]['administration']['dictator'][
-                    'name'] + '* - ' + 'https://www.erepublik.com/en/citizen/profile/' + str(
-                    obj['countries'][str(uid)]['administration']['dictator']['id']) + '\n'
+                embed.add_field(name='Dictator', value='[' + obj['countries'][str(uid)]['administration']['dictator']['name'] + '](https://www.erepublik.com/en/citizen/profile/' + str(obj['countries'][str(uid)]['administration']['dictator']['id']) + ')', inline=True)
             if obj['countries'][str(uid)]['administration']['president']['id']:
-                admin_text += '**President:** *' + obj['countries'][str(uid)]['administration']['president'][
-                    'name'] + '* - ' + 'https://www.erepublik.com/en/citizen/profile/' + str(
-                    obj['countries'][str(uid)]['administration']['president']['id']) + '\n'
+                embed.add_field(name='President', value='[' + obj['countries'][str(uid)]['administration']['president']['name'] + '](https://www.erepublik.com/en/citizen/profile/' + str(obj['countries'][str(uid)]['administration']['president']['id']) + ')', inline=True)
             for minister in obj['countries'][str(uid)]['administration']['minister']:
-                admin_text += '**' + minister + ':** *' + \
-                             obj['countries'][str(uid)]['administration']['minister'][minister][
-                                 'name'] + '* - ' + 'https://www.erepublik.com/en/citizen/profile/' + str(
-                    obj['countries'][str(uid)]['administration']['minister'][minister]['id']) + '\n'
-            em = discord.Embed(title='Information about ' + self.utils.get_country_flag(uid) + ' ' + country + ':',
-                               description=admin_text + pop_text + eco_text, colour=0x0053A9)
-            await self.bot.send_message(ctx.message.channel, '', embed=em)
+                embed.add_field(name=minister, value='[' + obj['countries'][str(uid)]['administration']['minister'][minister]['name'] + '](https://www.erepublik.com/en/citizen/profile/' + str(obj['countries'][str(uid)]['administration']['minister'][minister]['id']) + ')', inline=True)
+            embed.add_field(name='Finance', value='--------------------------------------', inline=False)
+            embed.add_field(name='CC', value=str(obj['countries'][str(uid)]['economy']['cc']), inline=True)
+            embed.add_field(name='Gold', value=str(obj['countries'][str(uid)]['economy']['gold']), inline=True)
+            embed.add_field(name='Average salary', value=str(obj['countries'][str(uid)]['economy']['salary_average']) + ' CC', inline=True)
+            embed.add_field(name='Population', value=str(obj['countries'][str(uid)]['population']['total']) + ' citizens', inline=True)
+
+            await self.bot.send_message(ctx.message.channel, '', embed=embed)
         except:
             logger.info('\tCountry ***' + in_country + '*** not recognized')
             await self.bot.say('Country ***' + in_country + '*** not recognized')

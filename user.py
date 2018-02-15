@@ -77,30 +77,30 @@ class User:
 
         citizen = obj['players'][found_user[0]]
 
-        user_text = '**Status**: ' + ('Alive' if citizen['general']['is_alive'] else 'Dead') + '\n'
-        user_text += '**Date registered**: ' + citizen['general']['registered'] + '\n'
-        user_text += '**ID**: ' + str(citizen['citizen_id']) + '\n'
-        user_text += '**Level**: ' + str(citizen['general']['level']) + '\n'
-        user_text += '**Division**: ' + str(citizen['military']['division']) + '\n'
-        user_text += '**Citizenship**: ' + self.utils.get_country_flag(
-            citizen['citizenship']['country_id']) + ' ' + citizen['citizenship']['country_name'] + '\n'
-        if citizen['military_unit']['name']:
-            user_text += '**Military unit**: ' + citizen['military_unit'][
-                'name'] + ' ' + 'https://www.erepublik.com/en/military/military-unit/' + str(
-                citizen['military_unit']['id']) + '\n'
-        user_text += '**Strength**: ' + str(citizen['military']['strength']) + '\n'
-        user_text += '**Perception**: ' + str(citizen['military']['perception']) + '\n'
-        user_text += '**Rank**: ' + str(citizen['military']['rank_name']).replace('*', '\*') + '\n'
-        user_text += '**Aircraft rank**: ' + str(citizen['military']['rank_name_aircraft']).replace('*', '\*') + '\n'
-        if citizen['newspaper']['name']:
-            user_text += '**Newspaper**: ' + citizen['newspaper'][
-                'name'] + ' ' + 'https://www.erepublik.com/en/newspaper/' + str(citizen['newspaper']['id']) + '\n'
-        user_text += '**Profile link**: https://www.erepublik.com/en/citizen/profile/' + str(
-            citizen['citizen_id']) + '\n'
+        embed = discord.Embed(colour=discord.Colour(0xf5a623))
+        embed.set_thumbnail(
+            url='https://erepublik.tools/avatar/citizen/' + str(citizen['citizen_id']) + '.jpg')
+        embed.set_author(name=citizen['name'], url='https://www.erepublik.com/en/citizen/profile/' + str(citizen['citizen_id']),
+                         icon_url='https://erepublik.tools/avatar/citizen/' + str(citizen['citizen_id']) + ".jpg")
+        embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
+                         icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
 
-        em = discord.Embed(title='Citizen information (' + citizen['name'] + ')', description=user_text,
-                           colour=0x3D9900)
-        await self.bot.send_message(ctx.message.channel, '', embed=em)
+        embed.add_field(name='Status', value=('Alive' if citizen['general']['is_alive'] else 'Dead'), inline=True)
+        embed.add_field(name='Date registered', value=citizen['general']['registered'], inline=True)
+        embed.add_field(name='ID', value=str(citizen['citizen_id']), inline=True)
+        embed.add_field(name='Level', value=str(citizen['general']['level']), inline=True)
+        embed.add_field(name='Division', value=str(citizen['military']['division']), inline=True)
+        embed.add_field(name='Citizenship', value=self.utils.get_country_flag(
+            citizen['citizenship']['country_id']) + ' ' + citizen['citizenship']['country_name'], inline=True)
+        embed.add_field(name='Military Unit', value='[' + citizen['military_unit']['name'] + '](https://www.erepublik.com/en/military/military-unit/' + str(citizen['military_unit']['id']) + ')', inline=True)
+        embed.add_field(name='Party', value='[' + citizen['party']['name'] + '](https://www.erepublik.com/en/party/' + str(citizen['party']['id']) + ')', inline=True)
+        embed.add_field(name='Strength', value=str(citizen['military']['strength']), inline=True)
+        embed.add_field(name='Perception', value=str(citizen['military']['perception']), inline=True)
+        embed.add_field(name='Rank', value=str(citizen['military']['rank_name']).replace('*', '\*'), inline=True)
+        embed.add_field(name='Aircraft rank', value=str(citizen['military']['rank_name_aircraft']).replace('*', '\*'), inline=True)
+        embed.add_field(name='Newspaper', value='[' + citizen['newspaper']['name'] + '](https://www.erepublik.com/en/newspaper/' + str(citizen['newspaper']['id']) + ')', inline=True)
+
+        await self.bot.send_message(ctx.message.channel, '', embed=embed)
 
     @commands.group(pass_context=True, aliases=['HISTORY'])
     async def history(self, ctx):
@@ -121,6 +121,7 @@ class User:
         user_text[0] = ''
         i = 0
         hists = obj['history'][found_user[0]]['cs']
+
         if len(hists) > 0:
             hists = sorted(hists, key=lambda x: x['added'])
             for hist in hists:
@@ -132,11 +133,20 @@ class User:
                     i += 1
         else:
             user_text[0] = 'No history to display.'
+
+        embed = discord.Embed(colour=discord.Colour(0xf5a623))
+        embed.set_thumbnail(
+            url='https://erepublik.tools/avatar/citizen/' + str(found_user[0]) + '.jpg')
+        embed.set_author(name=str(found_user[1]),
+                         url='https://www.erepublik.com/en/citizen/profile/' + str(found_user[0]),
+                         icon_url='https://erepublik.tools/avatar/citizen/' + str(found_user[0]) + ".jpg")
+        embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
+                         icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
+
         i = 0
         while len(user_text[i]):
-            em = discord.Embed(title='Citizen CS history (' + found_user[1] + ')', description=user_text[i],
-                               colour=0x3D9900)
-            await self.bot.send_message(ctx.message.channel, '', embed=em)
+            embed.description = user_text[i]
+            await self.bot.send_message(ctx.message.channel, '', embed=embed)
             i += 1
 
     @history.command(pass_context=True, aliases=['NAME'])
@@ -163,10 +173,20 @@ class User:
                     i += 1
         else:
             user_text[0] = 'No history to display.'
+
+        embed = discord.Embed(colour=discord.Colour(0xf5a623))
+        embed.set_thumbnail(
+            url='https://erepublik.tools/avatar/citizen/' + str(found_user[0]) + '.jpg')
+        embed.set_author(name=str(found_user[1]),
+                         url='https://www.erepublik.com/en/citizen/profile/' + str(found_user[0]),
+                         icon_url='https://erepublik.tools/avatar/citizen/' + str(found_user[0]) + ".jpg")
+        embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
+                         icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
+
         i = 0
         while len(user_text[i]):
-            em = discord.Embed(title='Citizen history (' + found_user[1] + ')', description=user_text[i], colour=0x3D9900)
-            await self.bot.send_message(ctx.message.channel, '', embed=em)
+            embed.description=user_text[i]
+            await self.bot.send_message(ctx.message.channel, '', embed=embed)
             i += 1
 
     @history.command(pass_context=True, aliases=['MU'])
@@ -186,23 +206,28 @@ class User:
         if len(hists) > 0:
             hists = sorted(hists, key=lambda x: x['added'])
             for hist in hists:
-                user_text[i] += 'From ***' + (
-                    hist['mu_name_from'] + '*** https://www.erepublik.com/en/military/military-unit/' + str(
-                        hist['mu_id_from']) if hist['mu_name_from'] is not None else 'None***') + '\nTo ***' + (
-                                    hist[
-                                        'mu_name_to'] + '*** https://www.erepublik.com/en/military/military-unit/' + str(
-                                        hist['mu_id_to']) if hist['mu_name_to'] is not None else 'None***') + '\n(' + \
-                                hist[
-                                    'added'] + ')\n'
+                user_text[i] += 'From ' + ('[' + hist['mu_name_from'] + '](https://www.erepublik.com/en/military/military-unit/' + str(hist['mu_id_from']) + ')' if hist['mu_name_from'] is not None else '***None***')
+                user_text[i] += ' to ' + ('[' + hist['mu_name_to'] + '](https://www.erepublik.com/en/military/military-unit/' + str(hist['mu_id_to']) + ')' if hist['mu_name_to'] is not None else '***None***')
+                user_text[i] += ' (' + hist['added'] + ')\n'
                 if len(user_text[i]) > 1800:
                     user_text[i] += '...'
                     i += 1
         else:
             user_text[0] = 'No history to display.'
+
+        embed = discord.Embed(colour=discord.Colour(0xf5a623))
+        embed.set_thumbnail(
+            url='https://erepublik.tools/avatar/citizen/' + str(found_user[0]) + '.jpg')
+        embed.set_author(name=str(found_user[1]),
+                         url='https://www.erepublik.com/en/citizen/profile/' + str(found_user[0]),
+                         icon_url='https://erepublik.tools/avatar/citizen/' + str(found_user[0]) + ".jpg")
+        embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
+                         icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
+
         i = 0
         while len(user_text[i]):
-            em = discord.Embed(title='Citizen history (' + found_user[1] + ')', description=user_text[i], colour=0x3D9900)
-            await self.bot.send_message(ctx.message.channel, '', embed=em)
+            embed.description=user_text[i]
+            await self.bot.send_message(ctx.message.channel, '', embed=embed)
             i += 1
 
     @history.command(pass_context=True, aliases=['PARTY'])
@@ -222,22 +247,29 @@ class User:
         if len(hists) > 0:
             hists = sorted(hists, key=lambda x: x['added'])
             for hist in hists:
-                user_text[i] += 'From ***' + (
-                    hist['party_name_from'] + '*** https://www.erepublik.com/en/party/' + str(hist['party_id_from']) if
-                    hist['party_name_from'] is not None else 'None***') + '\nTo ***' + (
-                                   hist['party_name_to'] + '*** https://www.erepublik.com/en/party/' + str(
-                                       hist['party_id_to']) if hist[
-                                                                   'party_name_to'] is not None else 'None***') + '\n(' + \
-                               hist['added'] + ')\n'
+                user_text[i] += 'From ' + ('[' + hist['party_name_from'] + '](https://www.erepublik.com/en/party/' + str(hist['party_id_from']) + ')' if hist['party_name_from'] is not None else '***None***')
+                user_text[i] += ' to ' + ('[' + hist['party_name_to'] + '](https://www.erepublik.com/en/party/' + str(hist['party_id_to']) + ')' if hist['party_name_to'] is not None else '***None***')
+                user_text[i] += ' (' + hist['added'] + ')\n'
+
                 if len(user_text[i]) > 1800:
                     user_text[i] += '...'
                     i += 1
         else:
             user_text[0] = 'No history to display.'
+
+        embed = discord.Embed(colour=discord.Colour(0xf5a623))
+        embed.set_thumbnail(
+            url='https://erepublik.tools/avatar/citizen/' + str(found_user[0]) + '.jpg')
+        embed.set_author(name=str(found_user[1]),
+                         url='https://www.erepublik.com/en/citizen/profile/' + str(found_user[0]),
+                         icon_url='https://erepublik.tools/avatar/citizen/' + str(found_user[0]) + ".jpg")
+        embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
+                         icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
+
         i = 0
         while len(user_text[i]):
-            em = discord.Embed(title='Citizen history (' + found_user[1] + ')', description=user_text[i], colour=0x3D9900)
-            await self.bot.send_message(ctx.message.channel, '', embed=em)
+            embed.description=user_text[i]
+            await self.bot.send_message(ctx.message.channel, '', embed=embed)
             i += 1
 
 
