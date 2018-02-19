@@ -274,7 +274,7 @@ class Market:
                     offers[i]['offer_id']) + ')' + '\n'
 
         embed = discord.Embed(colour=discord.Colour(0xce2c19))
-        embed.set_author(name='Best hrm offers',
+        embed.set_author(name='Best arm offers',
                          icon_url='https://static.erepublik.tools/assets/img/erepublik/industry/24_1.png')
         embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
                          icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')

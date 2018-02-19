@@ -42,6 +42,7 @@ class Misc:
                      value="Return a specific history of information for a specified user", inline=False)
         em.add_field(name="!invite",
                      value="Return the link to invite Socrates to your own server", inline=False)
+        em.add_field(name="!(food|weapons|aircraft|house|frm|wrm|arm|hrm) [quality]", value="Returns a list of the best offers for the given product")
         em.add_field(name="!jobs [number|country name]", value="Returns the top jobs overall or for a specific country",
                      inline=False)
         em.add_field(name="!mpp [country name]", value="Returns a list of mpps for the specified country", inline=False)
@@ -56,7 +57,8 @@ class Misc:
         em.set_author(name="Curlybear#1962", url='https://curlybear.eu',
                       icon_url='https://erpk-static-avatars.s3.amazonaws.com/avatars/Citizens/2011/07/12/0a83af20636fe1ac4d01c6d132572943.png?8e8837b38eeff670f9301b95d31a47a2')
         em.set_thumbnail(url='http://www.dipsacademy.com/images/socrates.png')
-        em.set_footer(text='Powered by http://api.erepublik-deutschland.de/')
+        em.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
+                      icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
         await self.bot.send_message(ctx.message.channel, '', embed=em)
 
     @commands.command(pass_context=True, aliases=['CONVERT'])
@@ -92,7 +94,13 @@ class Misc:
     async def announcement(self, ctx, *, message: str):
         logger.info('!announcement ' + message + ' - User: ' + str(ctx.message.author))
         for server in self.bot.servers:
-            await self.bot.send_message(server, message + '\n\nSent by: *' + str(ctx.message.author) + '*')
+            try:
+                await self.bot.send_message(server, message + '\n\nSent by: *' + str(ctx.message.author) + '*')
+                logger.info('   Sent to: ' + str(server))
+            except:
+                logger.info('   Not sent to: ' + str(server))
+                pass
+
 
 def setup(bot):
     bot.add_cog(Misc(bot))

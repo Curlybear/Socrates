@@ -49,7 +49,7 @@ class Country:
             embed.set_author(name=country + " Mutual Protection Pacts", icon_url='https://static.erepublik.tools/assets/img/erepublik/country/' + str(uid) + '.gif')
             embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
                              icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
-            
+
             embed.add_field(name="Country", value=mpp_text, inline=True)
             embed.add_field(name="Expiration date", value=expiration_text, inline=True)
             await self.bot.send_message(ctx.message.channel, '', embed=embed)

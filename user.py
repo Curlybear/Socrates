@@ -70,8 +70,6 @@ class User:
         if not found_user:
             return
 
-        logger.info(found_user)
-
         r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/details/' + found_user[0])
         obj = json.loads(r.text)
 
