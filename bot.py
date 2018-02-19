@@ -34,7 +34,7 @@ bot = commands.Bot(command_prefix='!', description=description)
 bot.remove_command("help")
 
 # this specifies what extensions to load when the bot starts up
-startup_extensions = ["misc", "country", "user", "battle", "wiki"]
+startup_extensions = ["misc", "country", "user", "battle", "wiki", "market"]
 
 
 @bot.command()
