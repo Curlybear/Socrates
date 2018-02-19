@@ -88,9 +88,9 @@ class Market:
 
         await self.bot.send_message(ctx.message.channel, '', embed=embed)
 
-    @commands.command(pass_context=True, aliases=['AIRCRAFT'])
-    async def aircraft(self, ctx, in_quality: str = '1'):
-        logger.info('!aircraft ' + in_quality + ' - User: ' + str(ctx.message.author))
+    @commands.command(pass_context=True, aliases=['AIRCRAFTS'])
+    async def aircrafts(self, ctx, in_quality: str = '1'):
+        logger.info('!aircrafts ' + in_quality + ' - User: ' + str(ctx.message.author))
         if not self.utils.is_number(in_quality):
             return
 
@@ -122,9 +122,9 @@ class Market:
 
         await self.bot.send_message(ctx.message.channel, '', embed=embed)
 
-    @commands.command(pass_context=True, aliases=['HOUSE'])
-    async def house(self, ctx, in_quality: str):
-        logger.info('!house ' + in_quality + ' - User: ' + str(ctx.message.author))
+    @commands.command(pass_context=True, aliases=['HOUSES'])
+    async def houses(self, ctx, in_quality: str):
+        logger.info('!houses ' + in_quality + ' - User: ' + str(ctx.message.author))
         if not self.utils.is_number(in_quality):
             return
 

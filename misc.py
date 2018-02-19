@@ -42,7 +42,7 @@ class Misc:
                      value="Return a specific history of information for a specified user", inline=False)
         em.add_field(name="!invite",
                      value="Return the link to invite Socrates to your own server", inline=False)
-        em.add_field(name="!(food|weapons|aircraft|house|frm|wrm|arm|hrm) [quality]", value="Returns a list of the best offers for the given product")
+        em.add_field(name="!(food|weapons|aircrafts|houses|frm|wrm|arm|hrm) [quality]", value="Returns a list of the best offers for the given product")
         em.add_field(name="!jobs [number|country name]", value="Returns the top jobs overall or for a specific country",
                      inline=False)
         em.add_field(name="!mpp [country name]", value="Returns a list of mpps for the specified country", inline=False)
