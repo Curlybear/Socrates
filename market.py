@@ -146,7 +146,7 @@ class Market:
                     offers[i]['offer_id']) + ')' + '\n'
 
         embed = discord.Embed(colour=discord.Colour(0xce2c19))
-        embed.set_author(name='Best Q' + in_quality + ' aircraft offers',
+        embed.set_author(name='Best Q' + in_quality + ' house offers',
                          icon_url='https://static.erepublik.tools/assets/img/erepublik/industry/4_' + in_quality + '.png')
         embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
                          icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')

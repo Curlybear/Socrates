@@ -38,6 +38,8 @@ class ErepUtils:
 
     def get_user_id(self, id):
         data = self.db.queryall("SELECT * FROM users WHERE id = ?", [id])
+        if not data:
+            raise Exception('User not found')
         return data
 
     def search_wiki(self, query):

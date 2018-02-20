@@ -28,7 +28,10 @@ class User:
         user_name = ''
         if self.utils.is_number(in_value):
             user_id = str(int(in_value))
-            user_name = (self.utils.get_user_id(user_id))[0][0]
+            try:
+                user_name = (self.utils.get_user_id(user_id))[0][0]
+            except Exception:
+                user_name = ''
         else:
             user_data = self.utils.get_user(in_value)
             if len(user_data) == 1:
@@ -67,8 +70,6 @@ class User:
         logger.info('!user ' + in_value + ' - User: ' + str(ctx.message.author))
 
         found_user = await self.find_user(ctx, in_value)
-        if not found_user:
-            return
 
         r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/players/details/' + found_user[0])
         obj = json.loads(r.text)
@@ -90,13 +91,16 @@ class User:
         embed.add_field(name='Division', value=str(citizen['military']['division']), inline=True)
         embed.add_field(name='Citizenship', value=self.utils.get_country_flag(
             citizen['citizenship']['country_id']) + ' ' + citizen['citizenship']['country_name'], inline=True)
-        embed.add_field(name='Military Unit', value='[' + citizen['military_unit']['name'] + '](https://www.erepublik.com/en/military/military-unit/' + str(citizen['military_unit']['id']) + ')', inline=True)
-        embed.add_field(name='Party', value='[' + citizen['party']['name'] + '](https://www.erepublik.com/en/party/' + str(citizen['party']['id']) + ')', inline=True)
+        if citizen['military_unit']['name']:
+            embed.add_field(name='Military Unit', value='[' + citizen['military_unit']['name'] + '](https://www.erepublik.com/en/military/military-unit/' + str(citizen['military_unit']['id']) + ')', inline=True)
+        if citizen['party']['name']:
+            embed.add_field(name='Party', value='[' + citizen['party']['name'] + '](https://www.erepublik.com/en/party/' + str(citizen['party']['id']) + ')', inline=True)
         embed.add_field(name='Strength', value=str(citizen['military']['strength']), inline=True)
         embed.add_field(name='Perception', value=str(citizen['military']['perception']), inline=True)
         embed.add_field(name='Rank', value=str(citizen['military']['rank_name']).replace('*', '\*'), inline=True)
         embed.add_field(name='Aircraft rank', value=str(citizen['military']['rank_name_aircraft']).replace('*', '\*'), inline=True)
-        embed.add_field(name='Newspaper', value='[' + citizen['newspaper']['name'] + '](https://www.erepublik.com/en/newspaper/' + str(citizen['newspaper']['id']) + ')', inline=True)
+        if citizen['newspaper']['name']:
+            embed.add_field(name='Newspaper', value='[' + citizen['newspaper']['name'] + '](https://www.erepublik.com/en/newspaper/' + str(citizen['newspaper']['id']) + ')', inline=True)
 
         await self.bot.send_message(ctx.message.channel, '', embed=embed)
 
