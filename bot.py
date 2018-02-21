@@ -3,6 +3,7 @@ from discord.ext import commands
 import configparser
 import logging
 import check
+import dbmanager
 
 # Config reader
 config = configparser.ConfigParser()
@@ -85,11 +86,14 @@ async def on_server_remove(server):
 async def on_message(message):
     if bot.user in message.mentions:
         await bot.add_reaction(message, '❤')
-        logger.info('Mentionned by ' + message.author.name)
+        logger.info('Mentioned by ' + message.author.name)
     await bot.process_commands(message)
 
 
 if __name__ == "__main__":
+
+    dbmanager.start_db()
+
     for extension in startup_extensions:
         try:
             bot.load_extension(extension)

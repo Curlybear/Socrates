@@ -31,7 +31,7 @@ class Wiki:
                 i = 1
                 text = ''
                 for entry in data:
-                    text += str(i) + ') **' + entry[1] + '** - *Category: ' + str(entry[2]) + '*\n'
+                    text += str(i) + ') **' + entry[0] + '** - *Category: ' + str(entry[1]) + '*\n'
                     i += 1
                 em = discord.Embed(title='Please enter the number of the targeted wiki entry',
                                    description=text,
@@ -45,7 +45,7 @@ class Wiki:
             else:
                 await self.bot.send_message(ctx.message.channel, 'No matching entry found.')
                 return
-        temp = json.JSONDecoder().decode(data[result_id][3])
+        temp = json.JSONDecoder().decode(data[result_id][2])
         tempembed = discord.Embed().from_data(temp)
         await self.bot.send_message(ctx.message.channel, '', embed=tempembed)
 
