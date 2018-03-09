@@ -156,6 +156,40 @@ class Market:
 
         await self.bot.send_message(ctx.message.channel, '', embed=embed)
 
+    @commands.command(pass_context=True, aliases=['TICKETS'])
+    async def tickets(self, ctx, in_quality: str):
+        logger.info('!tickets ' + in_quality + ' - User: ' + str(ctx.message.author))
+        if not self.utils.is_number(in_quality):
+            return
+
+        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/market/bestoffers/tickets/' + in_quality)
+        obj = json.loads(r.text)
+        offers = obj['bestoffers']
+
+        countries = ''
+        prices = ''
+        links = ''
+        if not offers:
+            await self.bot.send_message(ctx.message.channel, 'No matching offers')
+        else:
+            for i in range(10):
+                flag = self.utils.get_country_flag(offers[i]['country_id'])
+                countries += flag + ' ' + offers[i]['country_name'] + '\n'
+                prices += ':dollar: ' + str(offers[i]['price']) + ' - :package: ' + str(offers[i]['amount']) + '\n'
+                links += ':link: [Link to offer](https://www.erepublik.com/en/economy/marketplace/offer/' + str(
+                    offers[i]['offer_id']) + ')' + '\n'
+
+        embed = discord.Embed(colour=discord.Colour(0xce2c19))
+        embed.set_author(name='Best Q' + in_quality + ' ticket offers',
+                         icon_url='https://static.erepublik.tools/assets/img/erepublik/industry/3_' + in_quality + '.png')
+        embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
+                         icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
+        embed.add_field(name="Country", value=countries, inline=True)
+        embed.add_field(name="Price - Quantity", value=prices, inline=True)
+        embed.add_field(name="Link", value=links, inline=True)
+
+        await self.bot.send_message(ctx.message.channel, '', embed=embed)
+
     @commands.command(pass_context=True, aliases=['FRM'])
     async def frm(self, ctx):
         logger.info('!frm - User: ' + str(ctx.message.author))
