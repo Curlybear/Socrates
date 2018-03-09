@@ -37,6 +37,7 @@ class Country:
             mpps = obj['countries'][str(uid)]['military']['mpps']
             if not mpps:
                 mpp_text += '**No MPPs**'
+                expiration_text += '**No MPPs**'
             else:
                 mpps.sort(key = lambda x: x['expires'][0:10])
                 for mpp in mpps:
