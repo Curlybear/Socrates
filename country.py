@@ -4,7 +4,6 @@ import configparser
 import logging
 import requests
 import json
-from PythonGists import PythonGists
 import datetime
 
 import ereputils
@@ -72,9 +71,10 @@ class Country:
                     mpp_text += self.utils.get_country_name(country) + ';' + self.utils.get_country_name(
                         mpp['country_id']) + ';' + mpp['expires'][0:10] + '\n'
 
-        link = PythonGists.Gist(description='eRepublik MPPs', content=mpp_text, name='mpps' + datetime.datetime.now().strftime("%d-%m-%Y") + '.csv')
+        with open(config['PASTE']['paste_path'] + 'mpps' + datetime.datetime.now().strftime("%d-%m-%Y") + '.csv', 'w') as f:
+            f.write(mpp_text)
         em = discord.Embed(title='All MPPs',
-                           description=link, colour=0x0042B9)
+                           description=config['PASTE']['paste_url'] + 'mpps' + datetime.datetime.now().strftime("%d-%m-%Y") + '.csv', colour=0x0042B9)
         await self.bot.send_message(ctx.message.channel, '', embed=em)
 
     @commands.command(pass_context=True, aliases=['CINFO'])
