@@ -78,9 +78,9 @@ class User:
 
         embed = discord.Embed(colour=discord.Colour(0xf5a623))
         embed.set_thumbnail(
-            url='https://erepublik.tools/avatar/citizen/' + str(citizen['citizen_id']) + '.jpg')
+            url='https://avatar.erepublik.tools/citizen/' + str(citizen['citizen_id']) + '.jpg')
         embed.set_author(name=citizen['name'], url='https://www.erepublik.com/en/citizen/profile/' + str(citizen['citizen_id']),
-                         icon_url='https://erepublik.tools/avatar/citizen/' + str(citizen['citizen_id']) + ".jpg")
+                         icon_url='https://avatar.erepublik.tools/citizen/' + str(citizen['citizen_id']) + ".jpg")
         embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
                          icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
 
