@@ -16,6 +16,7 @@ config.read('config.ini')
 
 # API Key
 apiKey = config['DEFAULT']['api_key']
+apiVersion = config['DEFAULT']['api_version']
 
 
 class Country:
@@ -110,40 +111,37 @@ class Country:
             await self.bot.say('Country ***' + in_country + '*** not recognized')
 
     @commands.command(pass_context=True)
-    async def jobs(self, ctx, in_value='3'):
-        # logger.info('!jobs ' + in_value + ' - User: ' + str(ctx.message.author))
-        # jobtext = ''
+    async def jobs(self, ctx):
+        logger.info('!jobs - User: ' + str(ctx.message.author))
 
-        # if is_number(in_value):
-        #     r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/jobmarket/bestoffers')
-        #     obj = json.loads(r.text)
-        #     in_value = int(in_value)
-        #     if in_value > 5:
-        #         in_value = 5
-        #     for i in range(0, in_value):
-        #         jobtext += self.utils.get_country_flag(obj['bestoffers'][i]['country_id']) + ' **' + obj['bestoffers'][i]['country_name'] + '** *' + obj['bestoffers'][i]['citizen_name'] + '*\n| Before work tax: ' + str(obj['bestoffers'][i]['salary'])+ '\n| After work tax: ' + str(obj['bestoffers'][i]['netto']) + '\n'
-        #     em = discord.Embed(title='Best job offers:', description=jobtext, colour=0x0053A9)
-        #     await self.bot.send_message(ctx.message.channel, '', embed=em)
-        # if type(in_value) is str:
-        #     try:
-        #         nbrOffers = 3
-        #         uid = self.utils.get_country_id(in_value)
-        #         r = requests.get('https://api.erepublik-deutschland.de/'+ apiKey +'/jobmarket/countryoffers/' + str(uid))
-        #         obj = json.loads(r.text)
-        #         if len(obj['countryoffers']) == 0:
-        #             jobtext += '**No offers available**'
-        #         else:
-        #             if len(obj['countryoffers'][str(uid)]) < 3:
-        #                 nbrOffers = len(obj['countryoffers'][str(uid)])
-        #             for i in range(0, nbrOffers):
-        #                 jobtext += self.utils.get_country_flag(uid) +' **' + obj['countryoffers'][str(uid)][i]['citizen_name'] + '**\n| Before work tax: ' + str(obj['countryoffers'][str(uid)][i]['salary'])+ '\n| After work tax: ' + str(obj['countryoffers'][str(uid)][i]['netto']) + '\n'
-        #         em = discord.Embed(title='Best job offers in ' + self.utils.get_country_flag(uid) + ' '+ in_value + ':', description=jobtext, colour=0x0053A9)
-        #         await self.bot.send_message(ctx.message.channel, '', embed=em)
-        #     except:
-        #         logger.info('\tCountry ***' + in_value + '*** not recognized')
-        #         await self.bot.say('Country ***' + in_value + '*** not recognized')
-        await self.bot.say(
-            'Broken at the moment. Visit https://erepublik.tools/marketplace/jobs/0/offers for updated informations on the available jobs.')
+        r = requests.get(
+            'https://api.erepublik.tools/' + apiVersion + '/market/job/best-offers?key=' + apiKey)
+        obj = json.loads(r.text)
+        offers = obj['offers']
+
+        countries = ''
+        salary = ''
+        links = ''
+        if not offers:
+            await self.bot.send_message(ctx.message.channel, 'No matching offers')
+        else:
+            for i in range(10):
+                flag = self.utils.get_country_flag(offers[i]['country_id'])
+                countries += flag + ' ' + self.utils.get_country_name(offers[i]['country_id']) + '\n'
+                salary += ':dollar: ' + str(offers[i]['gross']) + ' (' + str(offers[i]['net']) + ') - :moneybag: ' + \
+                          (str(offers[i]['salary_limit']) if str(offers[i]['salary_limit']) != '0' else '∞') + '\n'
+                links += ':link: [Link to offer](https://www.erepublik.com/en/economy/job-market/' + str(
+                    offers[i]['country_id']) + ')' + '\n'
+
+        embed = discord.Embed(colour=discord.Colour(0xce2c19))
+        embed.set_author(name='Best job offers')
+        embed.set_footer(text='Powered by https://erepublik.tools',
+                         icon_url='https://erepublik.tools/assets/img/icon76.png')
+        embed.add_field(name="Country", value=countries, inline=True)
+        embed.add_field(name="Salary(net) - Limit", value=salary, inline=True)
+        embed.add_field(name="Link", value=links, inline=True)
+
+        await self.bot.send_message(ctx.message.channel, '', embed=embed)
 
 
 def setup(bot):
