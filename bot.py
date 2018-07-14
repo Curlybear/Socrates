@@ -29,7 +29,7 @@ logger.addHandler(handler)
 apiKey = config['DEFAULT']['api_key']
 
 # Instantiate bot
-description = 'Available commands \n !mpp [country name] - Returns a list of mpps for the specified country \n !jobs [number|country name]- Returns the top jobs overall or for a specific country \n !cinfo [country name] - Returns a list of information for the specified country \n !user [username|userid] - Return the information regarding a specified user \n !history (cs|name|mu|party) [username|userid] - Return a specific history of information for a specified user \n !battle (info|co) [battleid] - Return the information regarding a specified battle\n\nMore information at https://curlybear.eu/socrates \nPowered by erepublik-deutschland.de'
+description = ''
 bot = commands.Bot(command_prefix='!', description=description)
 bot.remove_command("help")
 

@@ -30,23 +30,14 @@ class Misc:
         em = discord.Embed(title='Help', description='Available commands', colour=0x0053A9)
         em.add_field(name="!alliances",
                      value="Return a visual representation of the alliances", inline=False)
-        em.add_field(name="!battle (info|co) [battleid]", value="Return the information regarding a specified battle",
-                     inline=False)
-        em.add_field(name="!cinfo [country name]", value="Returns a list of information for the specified country",
-                     inline=False)
         em.add_field(name="!convert [erepDay|date]",
                      value="Return the conversion of the provided erepDay or date (dd/mm/yyyy)", inline=False)
         em.add_field(name="!help",
                      value="Return this help message", inline=False)
-        em.add_field(name="!history (cs|name|mu|party) [username|userid]",
-                     value="Return a specific history of information for a specified user", inline=False)
         em.add_field(name="!invite",
                      value="Return the link to invite Socrates to your own server", inline=False)
         em.add_field(name="!(food|weapons|aircrafts|houses|tickets|frm|wrm|arm|hrm) [quality]", value="Returns a list of the best offers for the given product")
         em.add_field(name="!jobs", value="Returns the top jobs overall",
-                     inline=False)
-        em.add_field(name="!mpp [country name]", value="Returns a list of mpps for the specified country", inline=False)
-        em.add_field(name="!user [username|userid]", value="Return the information regarding a specified user",
                      inline=False)
         em.add_field(name="!wiki [entry name]",
                      value="Return the information relative to the queried entry", inline=False)
@@ -57,8 +48,8 @@ class Misc:
         em.set_author(name="Curlybear#1962", url='https://curlybear.eu',
                       icon_url='https://erpk-static-avatars.s3.amazonaws.com/avatars/Citizens/2011/07/12/0a83af20636fe1ac4d01c6d132572943.png?8e8837b38eeff670f9301b95d31a47a2')
         em.set_thumbnail(url='http://www.dipsacademy.com/images/socrates.png')
-        em.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
-                      icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
+        em.set_footer(text='Powered by https://www.erepublik.tools',
+                      icon_url='https://erepublik.tools/assets/img/icon76.png')
         await self.bot.send_message(ctx.message.channel, '', embed=em)
 
     @commands.command(pass_context=True, aliases=['CONVERT'])
