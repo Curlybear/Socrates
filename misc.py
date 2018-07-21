@@ -39,6 +39,8 @@ class Misc:
         em.add_field(name="!(food|weapons|aircrafts|houses|tickets|frm|wrm|arm|hrm) [quality]", value="Returns a list of the best offers for the given product")
         em.add_field(name="!jobs", value="Returns the top jobs overall",
                      inline=False)
+        em.add_field(name="!mpp [country]", value="Returns the mpp list for the given country",
+                     inline=False)
         em.add_field(name="!wiki [entry name]",
                      value="Return the information relative to the queried entry", inline=False)
         em.add_field(name="!wikicats",

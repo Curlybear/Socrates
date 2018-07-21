@@ -5,6 +5,7 @@ import logging
 import requests
 import json
 import datetime
+from bs4 import BeautifulSoup
 
 import ereputils
 
@@ -32,25 +33,25 @@ class Country:
             country = self.utils.get_country_name(uid)
             mpp_text = ''
             expiration_text = ''
-            r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/countries/details/' + str(uid))
-            obj = json.loads(r.text)
-            mpps = obj['countries'][str(uid)]['military']['mpps']
-            if not mpps:
+            r = requests.get("http://api.erepublik.com/map/data/")
+            e = BeautifulSoup(r.text, 'html.parser')
+
+            mpps = e.countries.find(name="country", c_id=uid).mpps
+            print(mpps)
+            if mpps == ' ':
                 mpp_text += '**No MPPs**'
                 expiration_text += '**No MPPs**'
             else:
-                mpps.sort(key = lambda x: x['expires'][0:10])
-                for mpp in mpps:
-                    mpp_text += self.utils.get_country_flag(mpp['country_id']) + ' **' + self.utils.get_country_name(
-                        mpp['country_id']) + '**' + '\n'
+                for mpp in sorted(mpps, key = lambda x: x['expires']):
+                    mpp_text += self.utils.get_country_flag(mpp['c_id']) + ' **' + self.utils.get_country_name(
+                        mpp['c_id']) + '**' + '\n'
 
-                    expiration_text += ':small_blue_diamond: ' + mpp['expires'][0:10] + '\n'
+                    expiration_text += ':small_blue_diamond: ' + mpp['expires'][:4] + '-' + mpp['expires'][4:6] + '-' + mpp['expires'][6:8] + '\n'
 
             embed = discord.Embed(colour=discord.Colour(0xce2c19))
             embed.set_author(name=country + " Mutual Protection Pacts", icon_url='https://static.erepublik.tools/assets/img/erepublik/country/' + str(uid) + '.gif')
-            embed.set_footer(text='Powered by https://www.erepublik-deutschland.de/en',
-                             icon_url='https://www.erepublik-deutschland.de/assets/img/logo1-default_small.png')
-
+            embed.set_footer(text='Powered by https://erepublik.tools',
+                             icon_url='https://erepublik.tools/assets/img/icon76.png')
             embed.add_field(name="Country", value=mpp_text, inline=True)
             embed.add_field(name="Expiration date", value=expiration_text, inline=True)
             await self.bot.send_message(ctx.message.channel, '', embed=embed)
