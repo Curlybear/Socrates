@@ -37,7 +37,6 @@ class Country:
             e = BeautifulSoup(r.text, 'html.parser')
 
             mpps = e.countries.find(name="country", c_id=uid).mpps
-            print(mpps)
             if mpps == ' ':
                 mpp_text += '**No MPPs**'
                 expiration_text += '**No MPPs**'
@@ -63,15 +62,16 @@ class Country:
     async def mppsraw(self, ctx):
         logger.info('!mppsraw - User: ' + str(ctx.message.author))
         mpp_text = ''
-        r = requests.get('https://api.erepublik-deutschland.de/' + apiKey + '/countries/details/all')
-        obj = json.loads(r.text)
-        for country in obj['countries']:
-            mpps = obj['countries'][country]['military']['mpps']
-            if mpps:
-                mpps.sort(key=lambda x: x['expires'][0:10])
-                for mpp in mpps:
-                    mpp_text += self.utils.get_country_name(country) + ';' + self.utils.get_country_name(
-                        mpp['country_id']) + ';' + mpp['expires'][0:10] + '\n'
+
+        r = requests.get("http://api.erepublik.com/map/data/")
+        e = BeautifulSoup(r.text, 'html.parser')
+
+        for country in e.countries:
+            mpps = country.mpps
+            if len(mpps.text) == 0:
+                for mpp in sorted(mpps, key=lambda x: x['expires']):
+                    mpp_text += self.utils.get_country_name(country['c_id']) + ';' + self.utils.get_country_name(
+                        mpp['c_id']) + ';' + mpp['expires'][6:8] + '/' + mpp['expires'][4:6] + '/' + mpp['expires'][:4] + '\n'
 
         with open(config['PASTE']['paste_path'] + 'mpps' + datetime.datetime.now().strftime("%d-%m-%Y") + '.csv', 'w') as f:
             f.write(mpp_text)
