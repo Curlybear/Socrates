@@ -41,6 +41,8 @@ class Misc:
                      inline=False)
         em.add_field(name="!mpp [country]", value="Returns the mpp list for the given country",
                      inline=False)
+        em.add_field(name="!user [username|userid]", value="Return the information regarding a specified user",
+                     inline=False)
         em.add_field(name="!wiki [entry name]",
                      value="Return the information relative to the queried entry", inline=False)
         em.add_field(name="!wikicats",
