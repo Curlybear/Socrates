@@ -4,7 +4,7 @@ XP_BASE_GROUND = [
 	950000, 1140000, 1350000, 1600000, 1875000, 2185000, 2550000, 3000000, 3500000, 4150000, 4900000, 5800000, 7000000, 9000000,
 	11500000, 14500000, 18000000, 22000000, 26500000, 31500000, 37000000, 43000000, 50000000, 100000000, 200000000, 500000000, 1000000000,
 	2000000000, 4000000000, 10000000000
-];
+]
 
 RANKS_GROUND = [
 	'Recruit', 'Private', 'Private*', 'Private**', 'Private***', 'Corporal', 'Corporal*', 'Corporal**', 'Corporal***',
@@ -15,15 +15,17 @@ RANKS_GROUND = [
 	'Field Marshal', 'Field Marshal*', 'Field Marshal**', 'Field Marshal***', 'Supreme Marshal', 'Supreme Marshal*', 'Supreme Marshal**', 'Supreme Marshal***',
 	'National Force', 'National Force*', 'National Force**', 'National Force***', 'World Class Force', 'World Class Force*', 'World Class Force**', 'World Class Force***',
 	'Legendary Force', 'Legendary Force*', 'Legendary Force**', 'Legendary Force***', 'God of War', 'God of War*', 'God of War**', 'God of War***',
-	'Titan', 'Titan*', 'Titan**', 'Titan***'
-];
+	'Titan', 'Titan*', 'Titan**', 'Titan***', 'Legend I', 'Legend II', 'Legend III', 'Legend IV', 'Legend V', 'Legend VI',
+	'Legend VII', 'Legend VIII', 'Legend IX', 'Legend X', 'Legend XI', 'Legend XII', 'Legend XIII', 'Legend XIV', 'Legend XV', 'Legend XVI',
+	'Legend XVI', 'Legend XVII', 'Legend XVIII', 'Legend XIX', 'Legend XX',
+]
 
 XP_BASE_AIR = [
 	0, 10, 25, 45, 70, 100, 140, 190, 270, 380, 530, 850, 1300, 2340, 3300, 4200, 5150, 6100, 7020, 9100, 12750, 16400, 20000,
 	23650, 27300, 35500, 48000, 60000, 72400, 84500, 97000, 110000, 140000, 170000, 210000, 290000, 350000, 429000, 601000, 772000,
 	944000, 1115000, 1287000, 1673000, 2238000, 2804000, 3369000, 3935000, 4500000, 5020000, 7028000, 9036000, 11044000, 13052000,
 	15060000, 19580000, 27412000, 35244000, 43076000, 50908000
-];
+]
 
 RANKS_AIR = ['Airman', 'Airman 1st Class', 'Airman 1st Class*', 'Airman 1st Class**', 'Airman 1st Class***', 'Airman 1st Class****', 'Airman 1st Class*****',
 	'Senior Airman', 'Senior Airman*', 'Senior Airman**', 'Senior Airman***', 'Senior Airman****', 'Senior Airman*****',
@@ -35,4 +37,4 @@ RANKS_AIR = ['Airman', 'Airman 1st Class', 'Airman 1st Class*', 'Airman 1st Clas
 	'Wing Commander', 'Wing Commander*', 'Wing Commander**', 'Wing Commander***', 'Wing Commander****', 'Wing Commander*****',
 	'Group Captain', 'Group Captain*', 'Group Captain**', 'Group Captain***', 'Group Captain****', 'Group Captain*****',
 	'Air Commodore', 'Air Commodore *', 'Air Commodore **', 'Air Commodore ***', 'Air Commodore ****', 'Air Commodore *****'
-];
+]
