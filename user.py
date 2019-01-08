@@ -16,6 +16,7 @@ config.read('config.ini')
 
 # API Key
 apiKey = config['DEFAULT']['api_key']
+apiVersion = config['DEFAULT']['api_version']
 
 
 class User:
@@ -25,24 +26,29 @@ class User:
 
     async def find_user(self, ctx, in_value):
         user_text = ''
-        user_id = ''
-        user_name = ''
+        citizen = ''
         if self.utils.is_number(in_value):
             user_id = str(int(in_value))
             try:
-                user_name = (self.utils.get_user_id(user_id))[0][0]
+                r = requests.get('https://api.erepublik.tools/' + apiVersion + '/citizen/' + user_id + '?key=' + apiKey)
+                obj = json.loads(r.text)
+                citizen = obj['citizen']
             except Exception:
-                user_name = ''
+                citizen = ''
         else:
-            user_data = self.utils.get_user(in_value)
-            if len(user_data) == 1:
-                user_id = str(int(user_data[0][1]))
-                user_name = user_data[0][0]
+            r = requests.get('https://api.erepublik.tools/v0/citizen?name=' + in_value + '&page=1' + '&key=' + apiKey)
+            obj = json.loads(r.text)
+            pagination = obj['pagination']
+            if pagination['resultsTotal'] == 1:
+                user_id = obj['citizen'][0]['id']
+                r = requests.get('https://api.erepublik.tools/' + apiVersion + '/citizen/' + str(user_id) + '?key=' + apiKey)
+                obj = json.loads(r.text)
+                citizen = obj['citizen']
             else:
-                if 1 < len(user_data) <= 9:
+                if 1 < pagination['resultsTotal'] <= 9:
                     i = 1
-                    for citizen in user_data:
-                        user_text += str(i) + ') **' + citizen[0] + '** - *' + str(int(citizen[1])) + '*\n'
+                    for citizen_data in obj['citizen']:
+                        user_text += str(i) + ') **' + citizen_data['name'] + '** - *' + str(citizen_data['id']) + '*\n'
                         i += 1
                     em = discord.Embed(title='Please enter the number of the targeted citizen',
                                        description=user_text,
@@ -52,30 +58,27 @@ class User:
                     if int(msg.content) >= i or int(msg.content) < 1:
                         await self.bot.say('Invalid choice')
                         return
-                    user_id = str(int(user_data[int(msg.content) - 1][1]))
-                    user_name = user_data[int(msg.content) - 1][0]
+                    user_id = int(obj['citizen'][int(msg.content) - 1]['id'])
+                    r = requests.get('https://api.erepublik.tools/' + apiVersion + '/citizen/' + str(user_id) + '?key=' + apiKey)
+                    obj = json.loads(r.text)
+                    citizen = obj['citizen']
                 else:
-                    if len(user_data) > 9:
+                    if pagination['resultsTotal'] > 9:
                         user_text += '***' + in_value + '*** yields too many results (*' + str(
-                            len(user_data)) + '*).\nPlease specify a more precise username'
-                    if len(user_data) == 0:
+                            pagination['resultsTotal']) + '*).\nPlease specify a more precise username'
+                    if pagination['resultsTotal'] == 0:
                         user_text += '***' + in_value + '*** doesn\'t match any known citizens.'
 
                     em = discord.Embed(title='Citizen information', description=user_text, colour=0x3D9900)
                     await self.bot.send_message(ctx.message.channel, '', embed=em)
                     return
-        return user_id, user_name
+        return citizen
 
     @commands.command(pass_context=True, aliases=['USER'])
     async def user(self, ctx, *, in_value):
         logger.info('!user ' + in_value + ' - User: ' + str(ctx.message.author))
 
-        found_user = await self.find_user(ctx, in_value)
-
-        r = requests.get('https://api.erepublik.tools/v0/citizen/' + found_user[0] + '?key=' + apiKey)
-        obj = json.loads(r.text)
-
-        citizen = obj['citizen']
+        citizen = await self.find_user(ctx, in_value)
 
         embed = discord.Embed(colour=discord.Colour(0xf5a623))
         embed.set_thumbnail(
