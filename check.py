@@ -4,11 +4,11 @@ import json
 
 # Config reader
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
 
 def is_owner_check(message):
-    return message.author.id == config['DEFAULT']['owner_id']
+    return message.author.id == config["DEFAULT"]["owner_id"]
 
 
 def is_owner():

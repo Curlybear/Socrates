@@ -6,31 +6,31 @@ import check
 
 # Config reader
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
 # Set up logging
-logger = logging.getLogger('Socrates')
+logger = logging.getLogger("Socrates")
 logger.setLevel(logging.INFO)
 
 # create a file handler
-handler = logging.FileHandler('bot.log')
+handler = logging.FileHandler("bot.log")
 handler.setLevel(logging.INFO)
-handlerError = logging.FileHandler('botError.log')
+handlerError = logging.FileHandler("botError.log")
 handlerError.setLevel(logging.ERROR)
 
 # create a logging format
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 
 # add the handlers to the logger
 logger.addHandler(handler)
 
 # API Key
-apiKey = config['DEFAULT']['api_key']
+apiKey = config["DEFAULT"]["api_key"]
 
 # Instantiate bot
-description = ''
-bot = commands.Bot(command_prefix='!', description=description)
+description = ""
+bot = commands.Bot(command_prefix="!", description=description)
 bot.remove_command("help")
 
 # this specifies what extensions to load when the bot starts up
@@ -39,7 +39,7 @@ startup_extensions = ["misc", "country", "user", "battle", "wiki", "market"]
 
 @bot.command()
 @check.is_owner()
-async def load(extension_name : str):
+async def load(extension_name: str):
     """Loads an extension."""
     try:
         bot.load_extension(extension_name)
@@ -51,41 +51,42 @@ async def load(extension_name : str):
 
 @bot.command()
 @check.is_owner()
-async def unload(extension_name : str):
+async def unload(extension_name: str):
     """Unloads an extension."""
     bot.unload_extension(extension_name)
     logger.info("{} unloaded.".format(extension_name))
+
 
 # Events
 
 
 @bot.event
 async def on_ready():
-    print('Logged in as')
+    print("Logged in as")
     print(bot.user.name)
     print(bot.user.id)
-    print('------')
-    logger.info('Bot started as ' + bot.user.name)
+    print("------")
+    logger.info("Bot started as " + bot.user.name)
     for server in bot.servers:
-        logger.info('   ' + server.name)
-    await bot.change_presence(game=discord.Game(name='eRepublik'))
+        logger.info("   " + server.name)
+    await bot.change_presence(game=discord.Game(name="eRepublik"))
 
 
 @bot.event
 async def on_server_join(server):
-    logger.info('Bot joined: ' + server.name)
+    logger.info("Bot joined: " + server.name)
 
 
 @bot.event
 async def on_server_remove(server):
-    logger.info('Bot left: ' + server.name)
+    logger.info("Bot left: " + server.name)
 
 
 @bot.event
 async def on_message(message):
     if bot.user in message.mentions:
-        await bot.add_reaction(message, '❤')
-        logger.info('Mentionned by ' + message.author.name)
+        await bot.add_reaction(message, "❤")
+        logger.info("Mentionned by " + message.author.name)
     await bot.process_commands(message)
 
 
@@ -94,7 +95,7 @@ if __name__ == "__main__":
         try:
             bot.load_extension(extension)
         except Exception as e:
-            exc = '{}: {}'.format(type(e).__name__, e)
-            logger.warn('Failed to load extension {}\n{}'.format(extension, exc))
+            exc = "{}: {}".format(type(e).__name__, e)
+            logger.warn("Failed to load extension {}\n{}".format(extension, exc))
 
-    bot.run(config['DEFAULT']['bot_token'])
+    bot.run(config["DEFAULT"]["bot_token"])
