@@ -37,7 +37,7 @@ class Country:
             e = BeautifulSoup(r.text, "html.parser")
 
             mpps = e.countries.find(name="country", c_id=uid).mpps
-            if mpps == " ":
+            if mpps.string == " ":
                 mpp_text += "**No MPPs**"
                 expiration_text += "**No MPPs**"
             else:
