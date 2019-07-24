@@ -1,5 +1,4 @@
-requests==2.18.4
-setuptools==39.0.1
-discord.py==0.16.12
 beautifulsoup4==4.8.0
-discord==1.0.1
+discord.py==0.16.12
+requests==2.22.0
+setuptools==41.0.1
