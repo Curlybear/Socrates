@@ -8,7 +8,7 @@ import ranks
 
 import ereputils
 
-logger = logging.getLogger("Socrates.User")
+logger = logging.getLogger("Socrates." + __name__)
 
 # Config reader
 config = configparser.ConfigParser()
@@ -123,7 +123,7 @@ class User:
 
     @commands.command(pass_context=True, aliases=["USER"])
     async def user(self, ctx, *, in_value):
-        logger.info("!user " + in_value + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
 
         citizen = await self.find_user(ctx, in_value)
 
@@ -219,7 +219,7 @@ class User:
 
     @history.command(pass_context=True, aliases=["CS"])
     async def cs(self, ctx, *, in_value: str):
-        logger.info("!history cs " + in_value + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         user_text = ["", "", "", ""]
 
         found_user = await self.find_user(ctx, in_value)
@@ -282,7 +282,7 @@ class User:
 
     @history.command(pass_context=True, aliases=["NAME"])
     async def name(self, ctx, *, in_value: str):
-        logger.info("!history name " + in_value + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         user_text = ["", "", "", ""]
 
         found_user = await self.find_user(ctx, in_value)
@@ -341,7 +341,7 @@ class User:
 
     @history.command(pass_context=True, aliases=["MU"])
     async def mu(self, ctx, *, in_value: str):
-        logger.info("!history mu " + in_value + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         user_text = ["", "", "", ""]
 
         found_user = await self.find_user(ctx, in_value)
@@ -410,9 +410,7 @@ class User:
 
     @history.command(pass_context=True, aliases=["PARTY"])
     async def party(self, ctx, *, in_value: str):
-        logger.info(
-            "!history party " + in_value + " - User: " + str(ctx.message.author)
-        )
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         user_text = ["", "", "", ""]
 
         found_user = await self.find_user(ctx, in_value)

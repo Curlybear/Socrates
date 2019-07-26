@@ -1,7 +1,10 @@
-import discord
-from discord.ext import commands
 import configparser
 import logging
+from logging.handlers import SysLogHandler
+
+import discord
+from discord.ext import commands
+
 import check
 
 # Config reader
@@ -12,18 +15,28 @@ config.read("config.ini")
 logger = logging.getLogger("Socrates")
 logger.setLevel(logging.INFO)
 
+# create logging formats
+formatter_file = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(name)s - %(funcName)s - %(message)s"
+)
+
+formatter_syslog = logging.Formatter(
+    "%(levelname)s - %(name)s - %(funcName)s - %(message)s"
+)
+
 # create a file handler
 handler = logging.FileHandler("bot.log")
-handler.setLevel(logging.INFO)
-handlerError = logging.FileHandler("botError.log")
-handlerError.setLevel(logging.ERROR)
+handler.setLevel(logging.DEBUG)
+handler.setFormatter(formatter_file)
 
-# create a logging format
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-handler.setFormatter(formatter)
+# create a syslog handler
+syslog_handler = SysLogHandler(address="/dev/log")
+syslog_handler.setLevel(logging.INFO)
+syslog_handler.setFormatter(formatter_syslog)
 
 # add the handlers to the logger
 logger.addHandler(handler)
+logger.addHandler(syslog_handler)
 
 # API Key
 apiKey = config["DEFAULT"]["api_key"]
@@ -68,7 +81,7 @@ async def on_ready():
     print("------")
     logger.info("Bot started as " + bot.user.name)
     for server in bot.servers:
-        logger.info("   " + server.name)
+        logger.debug("   " + server.name)
     await bot.change_presence(game=discord.Game(name="eRepublik"))
 
 
@@ -84,9 +97,10 @@ async def on_server_remove(server):
 
 @bot.event
 async def on_message(message):
+    logger.debug(message.content)
     if bot.user in message.mentions:
         await bot.add_reaction(message, "❤")
-        logger.info("Mentionned by " + message.author.name)
+        logger.info("Mentioned by " + message.author.name)
     await bot.process_commands(message)
 
 
@@ -96,6 +110,6 @@ if __name__ == "__main__":
             bot.load_extension(extension)
         except Exception as e:
             exc = "{}: {}".format(type(e).__name__, e)
-            logger.warn("Failed to load extension {}\n{}".format(extension, exc))
+            logger.warning("Failed to load extension {}\n{}".format(extension, exc))
 
     bot.run(config["DEFAULT"]["bot_token"])

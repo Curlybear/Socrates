@@ -2,7 +2,7 @@ import sqlite3
 import configparser
 import logging
 
-module_logger = logging.getLogger("Socrates." + __name__)
+logger = logging.getLogger("Socrates." + __name__)
 
 # Config reader
 config = configparser.ConfigParser()
@@ -14,7 +14,6 @@ class ErepDB:
     _db_cur = None
 
     def __init__(self):
-        self.logger = logging.getLogger("Socrates." + __name__)
         self._db_connection = sqlite3.connect(config["DEFAULT"]["db_name"])
         self._db_cur = self._db_connection.cursor()
 

@@ -9,7 +9,8 @@ from bs4 import BeautifulSoup
 
 import ereputils
 
-logger = logging.getLogger("Socrates.Country")
+logger = logging.getLogger("Socrates." + __name__)
+
 
 # Config reader
 config = configparser.ConfigParser()
@@ -27,7 +28,7 @@ class Country:
 
     @commands.command(pass_context=True, aliases=["MPP"])
     async def mpp(self, ctx, *, in_country: str):
-        logger.info("!mpp " + in_country + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         try:
             uid = self.utils.get_country_id(in_country)
             country = self.utils.get_country_name(uid)
@@ -80,7 +81,7 @@ class Country:
 
     @commands.command(pass_context=True, aliases=["MPPSRAW"])
     async def mppsraw(self, ctx):
-        logger.info("!mppsraw - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         mpp_text = ""
 
         r = requests.get("http://api.erepublik.com/map/data/")
@@ -123,7 +124,7 @@ class Country:
 
     @commands.command(pass_context=True, aliases=["CINFO"])
     async def cinfo(self, ctx, *, in_country: str):
-        logger.info("!cinfo " + in_country + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         try:
             uid = self.utils.get_country_id(in_country)
             country = self.utils.get_country_name(uid)
@@ -227,7 +228,7 @@ class Country:
 
     @commands.command(pass_context=True)
     async def jobs(self, ctx):
-        logger.info("!jobs - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
 
         r = requests.get(
             "https://api.erepublik.tools/"

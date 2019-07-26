@@ -5,7 +5,7 @@ import json
 
 import ereputils
 
-logger = logging.getLogger("Socrates.Wiki")
+logger = logging.getLogger("Socrates." + __name__)
 
 
 class Wiki:
@@ -15,12 +15,12 @@ class Wiki:
 
     @commands.command(pass_context=True, aliases=["ALLIANCES"])
     async def alliances(self, ctx):
-        logger.info("!alliances - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         await self.bot.send_file(ctx.message.channel, "img/alliances.png")
 
     @commands.command(pass_context=True, aliases=["WIKI"])
     async def wiki(self, ctx, *, search_query):
-        logger.info("!wiki " + search_query + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         data = self.utils.search_wiki(search_query)
 
         if len(data) == 1:
@@ -62,6 +62,7 @@ class Wiki:
 
     @commands.command(pass_context=True, aliases=["WIKICATS"])
     async def wikicats(self, ctx):
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         data = self.utils.get_wiki_categories()
         data.sort()
         text = ""
@@ -72,6 +73,7 @@ class Wiki:
 
     @commands.command(pass_context=True, aliases=["WIKILIST"])
     async def wikilist(self, ctx, *, category):
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         data = self.utils.get_wiki_entries_for_category(category)
         data.sort()
         text = ""

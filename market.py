@@ -7,7 +7,7 @@ import json
 
 import ereputils
 
-logger = logging.getLogger("Socrates.Country")
+logger = logging.getLogger("Socrates." + __name__)
 
 # Config reader
 config = configparser.ConfigParser()
@@ -25,7 +25,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["FOOD"])
     async def food(self, ctx, in_quality: str):
-        logger.info("!food " + in_quality + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         if not self.utils.is_number(in_quality):
             return
         r = requests.get(
@@ -86,7 +86,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["WEAPONS"])
     async def weapons(self, ctx, in_quality: str):
-        logger.info("!weapons " + in_quality + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         if not self.utils.is_number(in_quality):
             return
 
@@ -148,7 +148,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["AIRCRAFTS"])
     async def aircrafts(self, ctx, in_quality: str = "1"):
-        logger.info("!aircrafts " + in_quality + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         if not self.utils.is_number(in_quality):
             return
 
@@ -210,7 +210,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["HOUSES"])
     async def houses(self, ctx, in_quality: str):
-        logger.info("!houses " + in_quality + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         if not self.utils.is_number(in_quality):
             return
 
@@ -272,7 +272,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["TICKETS"])
     async def tickets(self, ctx, in_quality: str):
-        logger.info("!tickets " + in_quality + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         if not self.utils.is_number(in_quality):
             return
 
@@ -334,7 +334,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["FRM"])
     async def frm(self, ctx):
-        logger.info("!frm - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -390,7 +390,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["WRM"])
     async def wrm(self, ctx):
-        logger.info("!wrm - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -446,7 +446,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["HRM"])
     async def hrm(self, ctx):
-        logger.info("!hrm - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -502,7 +502,7 @@ class Market:
 
     @commands.command(pass_context=True, aliases=["ARM"])
     async def arm(self, ctx):
-        logger.info("!arm - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
 
         r = requests.get(
             "https://api.erepublik.tools/"

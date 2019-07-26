@@ -1,13 +1,12 @@
 import erepdb
 import logging
 
-module_logger = logging.getLogger("Socrates." + __name__)
+logger = logging.getLogger("Socrates." + __name__)
 
 
 class ErepUtils:
     def __init__(self):
         super(ErepUtils, self).__init__()
-        self.logger = logging.getLogger("Socrates." + __name__)
         self.db = erepdb.ErepDB()
 
     @staticmethod

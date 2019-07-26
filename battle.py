@@ -7,7 +7,8 @@ import json
 
 import ereputils
 
-logger = logging.getLogger("Socrates.Battle")
+logger = logging.getLogger("Socrates." + __name__)
+
 
 # Config reader
 config = configparser.ConfigParser()
@@ -15,6 +16,7 @@ config.read("config.ini")
 
 # API Key
 apiKey = config["DEFAULT"]["api_key"]
+apiVersion = config["DEFAULT"]["api_version"]
 
 
 class Battle:
@@ -29,7 +31,7 @@ class Battle:
 
     @battle.command(pass_context=True, aliases=["INFO"])
     async def info(self, ctx, battle_id):
-        logger.info("!battle info " + battle_id + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         r = requests.get(
             "https://api.erepublik-deutschland.de/"
             + apiKey
@@ -122,7 +124,7 @@ class Battle:
 
     @battle.command(pass_context=True, aliases=["CO"])
     async def co(self, ctx, battle_id):
-        logger.info("!battle co " + battle_id + " - User: " + str(ctx.message.author))
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         r = requests.get(
             "https://api.erepublik-deutschland.de/"
             + apiKey
