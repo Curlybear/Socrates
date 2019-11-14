@@ -4,3 +4,7 @@ config.ini
 *.log
 __pycache__
 .vscode
+env/
+bin/
+lib64
+pyvenv.cfg

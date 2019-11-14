@@ -19,7 +19,7 @@ apiKey = config["DEFAULT"]["api_key"]
 apiVersion = config["DEFAULT"]["api_version"]
 
 
-class Battle:
+class Battle(commands.Cog, name="Battle"):
     def __init__(self, bot):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
@@ -27,7 +27,7 @@ class Battle:
     @commands.group(pass_context=True, aliases=["BATTLE"])
     async def battle(self, ctx):
         if ctx.invoked_subcommand is None:
-            await self.bot.say("Invalid battle command passed...")
+            await ctx.message.channel.send("Invalid battle command passed...")
 
     @battle.command(pass_context=True, aliases=["INFO"])
     async def info(self, ctx, battle_id):
@@ -120,7 +120,7 @@ class Battle:
             description=battle_text,
             colour=0xBFF442,
         )
-        await self.bot.send_message(ctx.message.channel, "", embed=em)
+        await ctx.message.channel.send("", embed=em)
 
     @battle.command(pass_context=True, aliases=["CO"])
     async def co(self, ctx, battle_id):
@@ -260,7 +260,7 @@ class Battle:
             description=battle_text,
             colour=0xBFF442,
         )
-        await self.bot.send_message(ctx.message.channel, "", embed=em)
+        await ctx.message.channel.send("", embed=em)
 
 
 def setup(bot):

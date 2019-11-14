@@ -80,14 +80,14 @@ async def on_ready():
     print(bot.user.id)
     print("------")
     logger.info("Bot started as " + bot.user.name)
-    for server in bot.servers:
-        logger.debug("   " + server.name)
-    await bot.change_presence(game=discord.Game(name="eRepublik"))
+    for guild in bot.guilds:
+        logger.debug("   " + guild.name)
+    await bot.change_presence(activity=discord.Game(name="eRepublik"))
 
 
 @bot.event
-async def on_server_join(server):
-    logger.info("Bot joined: " + server.name)
+async def on_guild_join(guild):
+    logger.info("Bot joined: " + guild.name)
 
 
 @bot.event
@@ -99,7 +99,7 @@ async def on_server_remove(server):
 async def on_message(message):
     logger.debug(message.content)
     if bot.user in message.mentions:
-        await bot.add_reaction(message, "❤")
+        await message.add_reaction("❤")
         logger.info("Mentioned by " + message.author.name)
     await bot.process_commands(message)
 
@@ -111,5 +111,4 @@ if __name__ == "__main__":
         except Exception as e:
             exc = "{}: {}".format(type(e).__name__, e)
             logger.warning("Failed to load extension {}\n{}".format(extension, exc))
-
     bot.run(config["DEFAULT"]["bot_token"])

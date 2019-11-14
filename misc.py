@@ -12,7 +12,7 @@ import ereputils
 logger = logging.getLogger("Socrates." + __name__)
 
 
-class Misc:
+class Misc(commands.Cog, name="Misc"):
     def __init__(self, bot):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
@@ -24,7 +24,7 @@ class Misc:
         em = discord.Embed(
             title="Pong", description=ctx.message.content, colour=0x3D9900
         )
-        await self.bot.send_message(ctx.message.channel, "", embed=em)
+        await ctx.message.channel.send("", embed=em)
 
     @commands.command(pass_context=True, aliases=["HELP"])
     async def help(self, ctx):
@@ -88,7 +88,7 @@ class Misc:
             text="Powered by https://www.erepublik.tools",
             icon_url="https://erepublik.tools/assets/img/icon76.png",
         )
-        await self.bot.send_message(ctx.message.channel, "", embed=em)
+        await ctx.message.channel.send("", embed=em)
 
     @commands.command(pass_context=True, aliases=["CONVERT"])
     async def convert(self, ctx, in_value: str):
@@ -104,7 +104,7 @@ class Misc:
                     description="Date : " + final_date.strftime("%d/%m/%Y"),
                     colour=0x0053A9,
                 )
-                await self.bot.send_message(ctx.message.channel, "", embed=em)
+                await ctx.message.channel.send("", embed=em)
             else:
                 in_date = datetime.datetime.strptime(in_value, "%d/%m/%Y")
                 erep_day = in_date - start_date + datetime.timedelta(days=1)
@@ -113,7 +113,7 @@ class Misc:
                     description="eRepublik day : " + str(erep_day.days),
                     colour=0x0053A9,
                 )
-                await self.bot.send_message(ctx.message.channel, "", embed=em)
+                await ctx.message.channel.send("", embed=em)
         except:
             traceback.print_exc()
             logger.info("   Invalid input")
@@ -122,9 +122,8 @@ class Misc:
     @commands.command(pass_context=True, aliases=["INVITE"])
     async def invite(self, ctx):
         logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
-        await self.bot.send_message(
-            ctx.message.channel,
-            "To invite me to your own server click the following link: <https://discordapp.com/oauth2/authorize?client_id=304725683995934723&scope=bot&permissions=0>",
+        await ctx.message.channel.send(
+            "To invite me to your own server click the following link: <https://discordapp.com/oauth2/authorize?client_id=304725683995934723&scope=bot&permissions=0>"
         )
 
     @commands.command(pass_context=True, aliases=["ANNOUNCEMENT"])
@@ -133,8 +132,8 @@ class Misc:
         logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         for server in self.bot.servers:
             try:
-                await self.bot.send_message(
-                    server, message + "\n\nSent by: *" + str(ctx.message.author) + "*"
+                await ctx.message.channel.send(
+                    "\n\nSent by: *" + str(ctx.message.author) + "*"
                 )
                 logger.info("   Sent to: " + str(server))
             except:
@@ -172,7 +171,7 @@ class Misc:
             text="Powered by https://www.erepublik.tools",
             icon_url="https://erepublik.tools/assets/img/icon76.png",
         )
-        await self.bot.send_message(ctx.message.channel, "", embed=em)
+        await ctx.message.channel.send("", embed=em)
 
 
 def setup(bot):

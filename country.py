@@ -21,7 +21,7 @@ apiKey = config["DEFAULT"]["api_key"]
 apiVersion = config["DEFAULT"]["api_version"]
 
 
-class Country:
+class Country(commands.Cog, name="Country"):
     def __init__(self, bot):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
@@ -74,10 +74,12 @@ class Country:
             )
             embed.add_field(name="Country", value=mpp_text, inline=True)
             embed.add_field(name="Expiration date", value=expiration_text, inline=True)
-            await self.bot.send_message(ctx.message.channel, "", embed=embed)
+            await ctx.message.channel.send("", embed=embed)
         except:
             logger.info("\tCountry ***" + in_country + "*** not recognized")
-            await self.bot.say("Country ***" + in_country + "*** not recognized")
+            await ctx.message.channel.send(
+                "Country ***" + in_country + "*** not recognized"
+            )
 
     @commands.command(pass_context=True, aliases=["MPPSRAW"])
     async def mppsraw(self, ctx):
@@ -120,7 +122,7 @@ class Country:
             + ".csv",
             colour=0x0042B9,
         )
-        await self.bot.send_message(ctx.message.channel, "", embed=em)
+        await ctx.message.channel.send("", embed=em)
 
     @commands.command(pass_context=True, aliases=["CINFO"])
     async def cinfo(self, ctx, *, in_country: str):
@@ -221,10 +223,12 @@ class Country:
                 inline=True,
             )
 
-            await self.bot.send_message(ctx.message.channel, "", embed=embed)
+            await ctx.message.channel.send("", embed=embed)
         except:
             logger.info("\tCountry ***" + in_country + "*** not recognized")
-            await self.bot.say("Country ***" + in_country + "*** not recognized")
+            await ctx.message.channel.send(
+                "Country ***" + in_country + "*** not recognized"
+            )
 
     @commands.command(pass_context=True)
     async def jobs(self, ctx):
@@ -243,7 +247,7 @@ class Country:
         salary = ""
         links = ""
         if not offers:
-            await self.bot.send_message(ctx.message.channel, "No matching offers")
+            await ctx.message.channel.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -283,7 +287,7 @@ class Country:
         embed.add_field(name="Salary(net) - Limit", value=salary, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await self.bot.send_message(ctx.message.channel, "", embed=embed)
+        await ctx.message.channel.send("", embed=embed)
 
 
 def setup(bot):

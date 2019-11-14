@@ -19,7 +19,7 @@ apiKey = config["DEFAULT"]["api_key"]
 apiVersion = config["DEFAULT"]["api_version"]
 
 
-class User:
+class User(commands.Cog, name="User"):
     def __init__(self, bot):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
@@ -66,26 +66,35 @@ class User:
                 citizen = obj["citizen"]
             else:
                 if 1 < pagination["resultsTotal"] <= 9:
-                    i = 1
+                    number_of_matches = 1
                     for citizen_data in obj["citizen"]:
                         user_text += (
-                            str(i)
+                            str(number_of_matches)
                             + ") **"
                             + citizen_data["name"]
                             + "** - *"
                             + str(citizen_data["id"])
                             + "*\n"
                         )
-                        i += 1
+                        number_of_matches += 1
                     em = discord.Embed(
                         title="Please enter the number of the targeted citizen",
                         description=user_text,
                         colour=0x3D9900,
                     )
-                    await self.bot.send_message(ctx.message.channel, "", embed=em)
-                    msg = await self.bot.wait_for_message(author=ctx.message.author)
-                    if int(msg.content) >= i or int(msg.content) < 1:
-                        await self.bot.say("Invalid choice")
+                    await ctx.message.channel.send("", embed=em)
+
+                    def wait_reply(m):
+                        return (
+                            m.author == ctx.message.author
+                            and m.channel == ctx.message.channel
+                        )
+
+                    msg = await self.bot.wait_for(
+                        "message", check=wait_reply, timeout=20.0
+                    )
+                    if int(msg.content) >= number_of_matches or int(msg.content) < 1:
+                        await ctx.message.channel.send("Invalid choice")
                         return
                     user_id = int(obj["citizen"][int(msg.content) - 1]["id"])
                     r = requests.get(
@@ -117,7 +126,7 @@ class User:
                         description=user_text,
                         colour=0x3D9900,
                     )
-                    await self.bot.send_message(ctx.message.channel, "", embed=em)
+                    await ctx.message.channel.send("", embed=em)
                     return
         return citizen
 
@@ -210,12 +219,12 @@ class User:
                 inline=True,
             )
 
-        await self.bot.send_message(ctx.message.channel, "", embed=embed)
+        await ctx.message.channel.send("", embed=embed)
 
     @commands.group(pass_context=True, aliases=["HISTORY"])
     async def history(self, ctx):
         if ctx.invoked_subcommand is None:
-            await self.bot.say("Invalid history command passed...")
+            await ctx.message.channel.send("Invalid history command passed...")
 
     @history.command(pass_context=True, aliases=["CS"])
     async def cs(self, ctx, *, in_value: str):
@@ -277,7 +286,7 @@ class User:
         i = 0
         while len(user_text[i]):
             embed.description = user_text[i]
-            await self.bot.send_message(ctx.message.channel, "", embed=embed)
+            await ctx.message.channel.send("", embed=embed)
             i += 1
 
     @history.command(pass_context=True, aliases=["NAME"])
@@ -336,7 +345,7 @@ class User:
         i = 0
         while len(user_text[i]):
             embed.description = user_text[i]
-            await self.bot.send_message(ctx.message.channel, "", embed=embed)
+            await ctx.message.channel.send("", embed=embed)
             i += 1
 
     @history.command(pass_context=True, aliases=["MU"])
@@ -405,7 +414,7 @@ class User:
         i = 0
         while len(user_text[i]):
             embed.description = user_text[i]
-            await self.bot.send_message(ctx.message.channel, "", embed=embed)
+            await ctx.message.channel.send("", embed=embed)
             i += 1
 
     @history.command(pass_context=True, aliases=["PARTY"])
@@ -475,7 +484,7 @@ class User:
         i = 0
         while len(user_text[i]):
             embed.description = user_text[i]
-            await self.bot.send_message(ctx.message.channel, "", embed=embed)
+            await ctx.message.channel.send("", embed=embed)
             i += 1
 
 

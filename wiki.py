@@ -8,7 +8,7 @@ import ereputils
 logger = logging.getLogger("Socrates." + __name__)
 
 
-class Wiki:
+class Wiki(commands.Cog, name="Wiki"):
     def __init__(self, bot):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
@@ -16,7 +16,7 @@ class Wiki:
     @commands.command(pass_context=True, aliases=["ALLIANCES"])
     async def alliances(self, ctx):
         logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
-        await self.bot.send_file(ctx.message.channel, "img/alliances.png")
+        await ctx.message.channel.send(file=discord.File("img/alliances.png"))
 
     @commands.command(pass_context=True, aliases=["WIKI"])
     async def wiki(self, ctx, *, search_query):
@@ -45,20 +45,18 @@ class Wiki:
                     description=text,
                     colour=0x3D9900,
                 )
-                await self.bot.send_message(ctx.message.channel, "", embed=em)
+                await ctx.message.channel.send("", embed=em)
                 msg = await self.bot.wait_for_message(author=ctx.message.author)
                 if int(msg.content) >= i or int(msg.content) < 1:
-                    await self.bot.say("Invalid choice")
+                    await ctx.message.channel.send("Invalid choice")
                     return
                 result_id = int(msg.content) - 1
             else:
-                await self.bot.send_message(
-                    ctx.message.channel, "No matching entry found."
-                )
+                await ctx.message.channel.send("No matching entry found.")
                 return
         temp = json.JSONDecoder().decode(data[result_id][3])
         tempembed = discord.Embed().from_data(temp)
-        await self.bot.send_message(ctx.message.channel, "", embed=tempembed)
+        await ctx.message.channel.send("", embed=tempembed)
 
     @commands.command(pass_context=True, aliases=["WIKICATS"])
     async def wikicats(self, ctx):
@@ -69,7 +67,7 @@ class Wiki:
         for category in data:
             text += ":small_orange_diamond:" + category[0].title() + "\n"
         embed = discord.Embed(title="Wiki categories", description=text, color=0x808000)
-        await self.bot.send_message(ctx.message.channel, "", embed=embed)
+        await ctx.message.channel.send("", embed=embed)
 
     @commands.command(pass_context=True, aliases=["WIKILIST"])
     async def wikilist(self, ctx, *, category):
@@ -84,7 +82,7 @@ class Wiki:
             description=text,
             color=0x808000,
         )
-        await self.bot.send_message(ctx.message.channel, "", embed=embed)
+        await ctx.message.channel.send("", embed=embed)
 
 
 def setup(bot):
