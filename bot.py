@@ -21,7 +21,7 @@ formatter_file = logging.Formatter(
 )
 
 formatter_syslog = logging.Formatter(
-    "%(levelname)s - %(name)s - %(funcName)s - %(message)s"
+    "[SOCRATES] %(levelname)s - %(name)s - %(funcName)s - %(message)s"
 )
 
 # create a file handler
