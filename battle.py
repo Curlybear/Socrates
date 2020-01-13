@@ -262,6 +262,92 @@ class Battle(commands.Cog, name="Battle"):
         )
         await ctx.message.channel.send("", embed=em)
 
+    @commands.command(pass_context=True, aliases=["RH"])
+    async def rh(self, ctx, *, in_country):
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
+        try:
+            if in_country != "World":
+                uid = self.utils.get_country_id(in_country)
+                country = self.utils.get_country_name(uid)
+            region_text = ""
+            time_text = ""
+            occupied_text = ""
+            count = 0
+            r = requests.get(
+                "https://api.erepublik.tools/"
+                + apiVersion
+                + "/region/list?key="
+                + apiKey
+            )
+            obj = json.loads(r.text)
+            regions = obj["regions"]
+
+            for region in regions:
+                if region["original_owner_country_id"] == uid and region.get(
+                    "under_occupation_since"
+                ):
+                    if count < 10:
+                        region_text += (
+                            self.utils.get_country_flag(
+                                region["original_owner_country_id"]
+                            )
+                            + " **"
+                            + region["name"]
+                            + "**"
+                            + "\n"
+                        )
+                        time_text += (
+                            ":small_blue_diamond: "
+                            + region["under_occupation_since"]["date"][:-7]
+                            + "\n"
+                        )
+                        occupied_text += (
+                            ":small_orange_diamond: "
+                            + self.utils.get_country_flag(
+                                region["current_owner_country_id"]
+                            )
+                            + " "
+                            + self.utils.get_country_name(
+                                region["current_owner_country_id"]
+                            )
+                            + "\n"
+                        )
+                    count = count + 1
+            if count:
+                region_text = (
+                    region_text + "\n**Total occupied regions: **" + str(count)
+                )
+
+            embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+            embed.set_author(
+                name=country + " RHs",
+                icon_url="https://static.erepublik.tools/assets/img/erepublik/country/"
+                + str(uid)
+                + ".gif",
+            )
+            embed.set_footer(
+                text="Powered by https://erepublik.tools",
+                icon_url="https://erepublik.tools/assets/img/icon76.png",
+            )
+            if region_text == "":
+                embed.add_field(
+                    name="Regions",
+                    value="No regions under occupation are held by " + country,
+                    inline=True,
+                )
+            else:
+                embed.add_field(name="Regions", value=region_text, inline=True)
+                embed.add_field(
+                    name="Under occupation since", value=time_text, inline=True
+                )
+                embed.add_field(name="Occupied by", value=occupied_text, inline=True)
+            await ctx.message.channel.send("", embed=embed)
+        except:
+            logger.info("\tCountry ***" + in_country + "*** not recognized")
+            await ctx.message.channel.send(
+                "Country ***" + in_country + "*** not recognized"
+            )
+
 
 def setup(bot):
     bot.add_cog(Battle(bot))

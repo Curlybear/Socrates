@@ -6,6 +6,12 @@ import discord
 from discord.ext import commands
 
 import check
+import misc
+import country
+import user
+import battle
+import wiki
+import market
 
 # Config reader
 config = configparser.ConfigParser()
