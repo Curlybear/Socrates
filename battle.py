@@ -348,6 +348,84 @@ class Battle(commands.Cog, name="Battle"):
                 "Country ***" + in_country + "*** not recognized"
             )
 
+    @commands.command(pass_context=True, aliases=["SH"])
+    async def sh(self, ctx):
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
+        r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
+        data = json.loads(r.text)
+        battles = data["battles"]
+        picked_battles = list()
+        for battle_id in battles:
+            battle = battles[battle_id]
+            if battle["type"] == "aircraft":
+                battle["delay"] = battle["start"] - data["time"]
+                if battle["delay"] > 0:
+                    picked_battles.append(battle)
+                else:
+                    battle["started_since"] = data["time"] - battle["start"]
+
+                    div_id = next(iter(battle["div"]))
+                    if battle["div"][div_id]["stats"]["inv"]:
+                        battle["inv_damage"] = battle["div"][div_id]["stats"]["inv"][
+                            "damage"
+                        ]
+                    else:
+                        battle["inv_damage"] = 0
+                    if battle["div"][div_id]["stats"]["def"]:
+                        battle["def_damage"] = battle["div"][div_id]["stats"]["def"][
+                            "damage"
+                        ]
+                    else:
+                        battle["def_damage"] = 0
+                    if battle["inv_damage"] < 30000 or battle["def_damage"] < 30000:
+                        picked_battles.append(battle)
+        if len(picked_battles) > 0:
+            picked_battles.sort(key=lambda battle: -battle["delay"])
+            battle_text = ""
+            damage_text = ""
+            time_text = ""
+            for battle in picked_battles:
+                if "started_since" in battle:
+                    battle_text = "{}{}-{} [{}](https://www.erepublik.com/en/military/battlefield/{})\n".format(
+                        battle_text,
+                        self.utils.get_country_flag(battle["inv"]["id"]),
+                        self.utils.get_country_flag(battle["def"]["id"]),
+                        battle["region"]["name"],
+                        battle["id"],
+                    )
+                    damage_text = "{}{:<6}-{:>6}\n".format(
+                        damage_text, battle["inv_damage"], battle["def_damage"]
+                    )
+                    time_text = "{}+{}m{}s\n".format(
+                        time_text,
+                        battle["started_since"] // 60 % 60,
+                        battle["started_since"] % 60,
+                    )
+                else:
+                    battle_text = "{}{}-{} [{}](https://www.erepublik.com/en/military/battlefield/{})\n".format(
+                        battle_text,
+                        self.utils.get_country_flag(battle["inv"]["id"]),
+                        self.utils.get_country_flag(battle["def"]["id"]),
+                        battle["region"]["name"],
+                        battle["id"],
+                    )
+                    damage_text = damage_text + ":airplane_departure:\n"
+                    time_text = "{}-{}m{}s\n".format(
+                        time_text, battle["delay"] // 60 % 60, battle["delay"] % 60
+                    )
+            embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+            embed.set_author(name="SHs")
+            embed.set_footer(
+                text="Powered by https://erepublik.tools",
+                icon_url="https://erepublik.tools/assets/img/icon76.png",
+            )
+            embed.add_field(name="Battle", value=battle_text, inline=True)
+            embed.add_field(name="Damage", value=damage_text, inline=True)
+            embed.add_field(name="Time", value=time_text, inline=True)
+            await ctx.message.channel.send("", embed=embed)
+        else:
+            await ctx.message.channel.send("No SH available at the moment")
+
 
 def setup(bot):
     bot.add_cog(Battle(bot))
