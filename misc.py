@@ -64,6 +64,16 @@ class Misc(commands.Cog, name="Misc"):
             inline=False,
         )
         em.add_field(
+            name="!rh [country]",
+            value="Return the list of occupied regions of a given country",
+            inline=False,
+        )
+        em.add_field(
+            name="!sh",
+            value="Return the list of the upcoming air rounds as well as air rounds with limited damage done",
+            inline=False,
+        )
+        em.add_field(
             name="!wiki [entry name]",
             value="Return the information relative to the queried entry",
             inline=False,
