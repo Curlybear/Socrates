@@ -281,37 +281,50 @@ class Battle(commands.Cog, name="Battle"):
             )
             obj = json.loads(r.text)
             regions = obj["regions"]
-
+            picked_regions = list()
             for region in regions:
-                if region["original_owner_country_id"] == uid and region.get(
-                    "under_occupation_since"
-                ):
-                    if count < 10:
-                        region_text += (
-                            self.utils.get_country_flag(
-                                region["original_owner_country_id"]
-                            )
-                            + " **"
-                            + region["name"]
-                            + "**"
-                            + "\n"
+                if (
+                    region["original_owner_country_id"] == uid
+                    or region["current_owner_country_id"] == uid
+                ) and region.get("under_occupation_since"):
+                    picked_regions.append(region)
+
+            picked_regions.sort(
+                key=lambda region: region["under_occupation_since"]["date"],
+                reverse=True,
+            )
+
+            for region in picked_regions:
+                if count < 25:
+                    region_text += (
+                        self.utils.get_country_flag(region["original_owner_country_id"])
+                        + " **"
+                        + region["name"]
+                        + "**"
+                        + "\n"
+                    )
+                    time_text += (
+                        ":small_blue_diamond: "
+                        + region["under_occupation_since"]["date"][:-7]
+                        + "\n"
+                    )
+                    country_name = self.utils.get_country_name(
+                        region["current_owner_country_id"]
+                    )
+                    country_name = (
+                        (country_name[:18] + "..")
+                        if len(country_name) > 18
+                        else country_name
+                    )
+                    occupied_text += (
+                        ":small_orange_diamond: "
+                        + self.utils.get_country_flag(
+                            region["current_owner_country_id"]
                         )
-                        time_text += (
-                            ":small_blue_diamond: "
-                            + region["under_occupation_since"]["date"][:-7]
-                            + "\n"
-                        )
-                        occupied_text += (
-                            ":small_orange_diamond: "
-                            + self.utils.get_country_flag(
-                                region["current_owner_country_id"]
-                            )
-                            + " "
-                            + self.utils.get_country_name(
-                                region["current_owner_country_id"]
-                            )
-                            + "\n"
-                        )
+                        + " "
+                        + country_name
+                        + "\n"
+                    )
                     count = count + 1
             if count:
                 region_text = (

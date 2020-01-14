@@ -47,10 +47,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
@@ -109,10 +111,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
@@ -171,10 +175,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
@@ -233,10 +239,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
@@ -295,10 +303,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
@@ -353,10 +363,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
@@ -409,10 +421,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
@@ -465,10 +479,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
@@ -521,10 +537,12 @@ class Market(commands.Cog, name="Market"):
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
+                country_name = self.utils.get_country_name(offers[i]["country_id"])
+                country_name = (country_name[:18] + '..') if len(country_name) > 18 else country_name
                 countries += (
                     flag
                     + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
+                    + country_name
                     + "\n"
                 )
                 prices += (
