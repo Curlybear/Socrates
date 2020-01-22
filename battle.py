@@ -295,7 +295,7 @@ class Battle(commands.Cog, name="Battle"):
             )
 
             for region in picked_regions:
-                if count < 25:
+                if count < 20:
                     region_text += (
                         self.utils.get_country_flag(region["original_owner_country_id"])
                         + " **"
@@ -312,8 +312,8 @@ class Battle(commands.Cog, name="Battle"):
                         region["current_owner_country_id"]
                     )
                     country_name = (
-                        (country_name[:18] + "..")
-                        if len(country_name) > 18
+                        (country_name[:17] + "..")
+                        if len(country_name) > 17
                         else country_name
                     )
                     occupied_text += (
@@ -328,8 +328,14 @@ class Battle(commands.Cog, name="Battle"):
                     count = count + 1
             if count:
                 region_text = (
-                    region_text + "\n**Total occupied regions: **" + str(count)
+                    region_text
+                    + "\n**Total occupied regions: **"
+                    + str(len(picked_regions))
                 )
+                if count < len(picked_regions):
+                    region_text = region_text + " ({} not displayed)".format(
+                        len(picked_regions) - count
+                    )
 
             embed = discord.Embed(colour=discord.Colour(0xCE2C19))
             embed.set_author(
