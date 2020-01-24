@@ -52,7 +52,11 @@ class Misc(commands.Cog, name="Misc"):
             name="!(food|weapons|aircrafts|houses|tickets|frm|wrm|arm|hrm) [quality]",
             value="Returns a list of the best offers for the given product",
         )
-        em.add_field(name="!jobs", value="Returns the top jobs overall", inline=False)
+        em.add_field(
+            name="!jobs [country]",
+            value="Returns the top jobs of a given country, overall if none or provided",
+            inline=False,
+        )
         em.add_field(
             name="!mpp [country]",
             value="Returns the mpp list for the given country",

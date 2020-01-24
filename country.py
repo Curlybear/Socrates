@@ -231,63 +231,73 @@ class Country(commands.Cog, name="Country"):
             )
 
     @commands.command(pass_context=True)
-    async def jobs(self, ctx):
+    async def jobs(self, ctx, *, in_country=None):
         logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
-
-        r = requests.get(
-            "https://api.erepublik.tools/"
-            + apiVersion
-            + "/market/job/best-offers?key="
-            + apiKey
-        )
-        obj = json.loads(r.text)
-        offers = obj["offers"]
-
-        countries = ""
-        salary = ""
-        links = ""
-        if not offers:
-            await ctx.message.channel.send("No matching offers")
-        else:
-            for i in range(10):
-                flag = self.utils.get_country_flag(offers[i]["country_id"])
-                countries += (
-                    flag
-                    + " "
-                    + self.utils.get_country_name(offers[i]["country_id"])
-                    + "\n"
+        try:
+            if in_country:
+                uid = self.utils.get_country_id(in_country)
+                country = self.utils.get_country_name(uid)
+            else:
+                uid = "best-offers"
+                country = "World"
+            r = requests.get(
+                "https://api.erepublik.tools/{}/market/job/{}?key={}".format(
+                    apiVersion, uid, apiKey
                 )
-                salary += (
-                    ":dollar: "
-                    + str(offers[i]["gross"])
-                    + " ("
-                    + str(offers[i]["net"])
-                    + ") - :moneybag: "
-                    + (
-                        str(offers[i]["salary_limit"])
-                        if str(offers[i]["salary_limit"]) != "0"
-                        else "∞"
+            )
+            obj = json.loads(r.text)
+            offers = obj["offers"]
+
+            countries = ""
+            salary = ""
+            links = ""
+            if not offers:
+                await ctx.message.channel.send("No matching offers")
+            else:
+                for i in range(10):
+                    flag = self.utils.get_country_flag(offers[i]["country_id"])
+                    countries += (
+                        flag
+                        + " "
+                        + self.utils.get_country_name(offers[i]["country_id"])
+                        + "\n"
                     )
-                    + "\n"
-                )
-                links += (
-                    ":link: [Link to offer](https://www.erepublik.com/en/economy/job-market/"
-                    + str(offers[i]["country_id"])
-                    + ")"
-                    + "\n"
-                )
+                    salary += (
+                        ":dollar: "
+                        + str(offers[i]["gross"])
+                        + " ("
+                        + str(offers[i]["net"])
+                        + ") - :moneybag: "
+                        + (
+                            str(offers[i]["salary_limit"])
+                            if str(offers[i]["salary_limit"]) != "0"
+                            else "∞"
+                        )
+                        + "\n"
+                    )
+                    links += (
+                        ":link: [Link to offer](https://www.erepublik.com/en/economy/job-market/"
+                        + str(offers[i]["country_id"])
+                        + ")"
+                        + "\n"
+                    )
 
-        embed = discord.Embed(colour=discord.Colour(0xCE2C19))
-        embed.set_author(name="Best job offers")
-        embed.set_footer(
-            text="Powered by https://erepublik.tools",
-            icon_url="https://erepublik.tools/assets/img/icon76.png",
-        )
-        embed.add_field(name="Country", value=countries, inline=True)
-        embed.add_field(name="Salary(net) - Limit", value=salary, inline=True)
-        embed.add_field(name="Link", value=links, inline=True)
+            embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+            embed.set_author(name="Best job offers")
+            embed.set_footer(
+                text="Powered by https://erepublik.tools",
+                icon_url="https://erepublik.tools/assets/img/icon76.png",
+            )
+            embed.add_field(name="Country", value=countries, inline=True)
+            embed.add_field(name="Salary(net) - Limit", value=salary, inline=True)
+            embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+            await ctx.message.channel.send("", embed=embed)
+        except:
+            logger.info("\tCountry ***" + in_country + "*** not recognized")
+            await ctx.message.channel.send(
+                "Country ***" + in_country + "*** not recognized"
+            )
 
 
 def setup(bot):
