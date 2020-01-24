@@ -283,7 +283,12 @@ class Country(commands.Cog, name="Country"):
                     )
 
             embed = discord.Embed(colour=discord.Colour(0xCE2C19))
-            embed.set_author(name="Best job offers")
+            title = (
+                "Best job offers"
+                if not in_country
+                else "Best job offers in {}".format(country)
+            )
+            embed.set_author(name=title)
             embed.set_footer(
                 text="Powered by https://erepublik.tools",
                 icon_url="https://erepublik.tools/assets/img/icon76.png",
