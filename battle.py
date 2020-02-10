@@ -400,10 +400,23 @@ class Battle(commands.Cog, name="Battle"):
                         picked_battles.append(battle)
         if len(picked_battles) > 0:
             picked_battles.sort(key=lambda battle: -battle["delay"])
+            embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+            embed.set_author(name="SHs")
+            embed.set_footer(
+                text="Powered by https://erepublik.tools",
+                icon_url="https://erepublik.tools/assets/img/icon76.png",
+            )
             battle_text = ""
             damage_text = ""
             time_text = ""
             for battle in picked_battles:
+                if len(battle_text) > 900:
+                    embed.add_field(name="Battle", value=battle_text, inline=True)
+                    embed.add_field(name="Damage", value=damage_text, inline=True)
+                    embed.add_field(name="Time", value=time_text, inline=True)
+                    battle_text = ""
+                    damage_text = ""
+                    time_text = ""
                 if "started_since" in battle:
                     battle_text = "{}{}-{} [{}](https://www.erepublik.com/en/military/battlefield/{})\n".format(
                         battle_text,
@@ -432,12 +445,6 @@ class Battle(commands.Cog, name="Battle"):
                     time_text = "{}-{}m{}s\n".format(
                         time_text, battle["delay"] // 60 % 60, battle["delay"] % 60
                     )
-            embed = discord.Embed(colour=discord.Colour(0xCE2C19))
-            embed.set_author(name="SHs")
-            embed.set_footer(
-                text="Powered by https://erepublik.tools",
-                icon_url="https://erepublik.tools/assets/img/icon76.png",
-            )
             embed.add_field(name="Battle", value=battle_text, inline=True)
             embed.add_field(name="Damage", value=damage_text, inline=True)
             embed.add_field(name="Time", value=time_text, inline=True)
