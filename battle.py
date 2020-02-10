@@ -430,7 +430,7 @@ class Battle(commands.Cog, name="Battle"):
                     )
                     time_text = "{}+{}m{}s\n".format(
                         time_text,
-                        battle["started_since"] // 60 % 60,
+                        battle["started_since"] // 60,
                         battle["started_since"] % 60,
                     )
                 else:
