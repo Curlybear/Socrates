@@ -159,7 +159,7 @@ class Misc(commands.Cog, name="Misc"):
     )
     async def inthefollowingweeks(self, ctx):
         logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
-        rip_date = datetime.datetime(2017, 5, 19, 14, 38)
+        rip_date = datetime.datetime(2017, 5, 19, 13, 38)
         elapsed_time = datetime.datetime.utcnow() - rip_date
         em = discord.Embed(
             title="In the following weeks",
