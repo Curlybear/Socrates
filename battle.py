@@ -483,10 +483,10 @@ class Battle(commands.Cog, name="Battle"):
                 icon_url="https://erepublik.tools/assets/img/icon76.png",
             )
             for battle_id in battle_ids:
-                if len(embed) > 4000:
-                    embed.add_field(name="Battle", value=battle_text, inline=True)
-                    embed.add_field(name="Type", value=type_text, inline=True)
-                    embed.add_field(name="Time", value=time_text, inline=True)
+                if (
+                    len(embed) + len(battle_text) + len(type_text) + len(time_text)
+                    > 6000
+                ):
                     await ctx.message.channel.send("", embed=embed)
                     embed = discord.Embed(colour=discord.Colour(0xCE2C19))
                     embed.set_author(name="Epics")
@@ -494,6 +494,12 @@ class Battle(commands.Cog, name="Battle"):
                         text="Powered by https://erepublik.tools",
                         icon_url="https://erepublik.tools/assets/img/icon76.png",
                     )
+                    embed.add_field(name="Battle", value=battle_text, inline=True)
+                    embed.add_field(name="Type", value=type_text, inline=True)
+                    embed.add_field(name="Time", value=time_text, inline=True)
+                    battle_text = ""
+                    type_text = ""
+                    time_text = ""
                 if len(battle_text) > 800:
                     embed.add_field(name="Battle", value=battle_text, inline=True)
                     embed.add_field(name="Type", value=type_text, inline=True)
@@ -539,10 +545,21 @@ class Battle(commands.Cog, name="Battle"):
                         battle["started_since"] // 60,
                         battle["started_since"] % 60,
                     )
-
-            embed.add_field(name="Battle", value=battle_text, inline=True)
-            embed.add_field(name="Type", value=type_text, inline=True)
-            embed.add_field(name="Time", value=time_text, inline=True)
+            if len(embed) + len(battle_text) + len(type_text) + len(time_text) > 6000:
+                await ctx.message.channel.send("", embed=embed)
+                embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+                embed.set_author(name="Epics")
+                embed.set_footer(
+                    text="Powered by https://erepublik.tools",
+                    icon_url="https://erepublik.tools/assets/img/icon76.png",
+                )
+                embed.add_field(name="Battle", value=battle_text, inline=True)
+                embed.add_field(name="Type", value=type_text, inline=True)
+                embed.add_field(name="Time", value=time_text, inline=True)
+            else:
+                print(len(embed))
+                await ctx.message.channel.send("", embed=embed)
+            print(len(embed))
             await ctx.message.channel.send("", embed=embed)
         else:
             await ctx.message.channel.send("No epics or full-scale ongoing right now")
