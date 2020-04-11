@@ -135,6 +135,8 @@ async def on_command_error(ctx, error):
             logger.warning(ctx.__dict__)
             owner = bot.get_user(bot.owner_id)
             await owner.send(f"**Error in {ctx.invoked_with}**:\n{str(original.text)}")
+    elif isinstance(error, commands.errors.CommandNotFound):
+        pass
     else:
         logger.warning(f"**Error in {ctx.invoked_with}**:\n{str(error)}")
         logger.warning("".join(traceback.format_tb(error.__traceback__)))
