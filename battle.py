@@ -483,7 +483,7 @@ class Battle(commands.Cog, name="Battle"):
                 icon_url="https://erepublik.tools/assets/img/icon76.png",
             )
             for battle_id in battle_ids:
-                if len(battle_text) > 900:
+                if len(battle_text) > 800:
                     embed.add_field(name="Battle", value=battle_text, inline=True)
                     embed.add_field(name="Type", value=type_text, inline=True)
                     embed.add_field(name="Time", value=time_text, inline=True)
@@ -507,7 +507,6 @@ class Battle(commands.Cog, name="Battle"):
                 ]
 
                 for division in divisions:
-                    print(battle_id, division, sep=" - ")
                     battle_text = "{}{}-{} [{}](https://www.erepublik.com/en/military/battlefield/{})\n".format(
                         battle_text,
                         self.utils.get_country_flag(battle["inv"]["id"]),
