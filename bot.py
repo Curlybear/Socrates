@@ -69,7 +69,7 @@ startup_extensions = ["misc", "country", "user", "battle", "wiki", "market"]
 
 @bot.command()
 @check.is_owner()
-async def load(extension_name: str):
+async def load(ctx, extension_name: str):
     """Loads an extension."""
     try:
         bot.load_extension(extension_name)
@@ -81,15 +81,19 @@ async def load(extension_name: str):
 
 @bot.command()
 @check.is_owner()
-async def unload(extension_name: str):
+async def unload(ctx, extension_name: str):
     """Unloads an extension."""
     bot.unload_extension(extension_name)
     logger.info("{} unloaded.".format(extension_name))
 
 
+@bot.command()
+@check.is_owner()
+async def presence(ctx, *, presence_text: str):
+    await bot.change_presence(activity=discord.Game(name=presence_text))
+
+
 # Events
-
-
 @bot.event
 async def on_ready():
     print("Logged in as")
@@ -123,12 +127,20 @@ async def on_message(message):
 
 @bot.event
 async def on_command_error(ctx, error):
-    logger.warning(f"**Error in {ctx.invoked_with}**:\n{str(error.original.text)}")
-    logger.warning("".join(traceback.format_tb(error.original.__traceback__)))
-    logger.warning(ctx.__dict__)
-    owner = bot.get_user(bot.owner_id)
-
-    await owner.send(f"**Error in {ctx.invoked_with}**:\n{str(error.original.text)}")
+    if isinstance(error, commands.CommandInvokeError):
+        original = error.original
+        if not isinstance(original, discord.HTTPException):
+            logger.warning(f"**Error in {ctx.invoked_with}**:\n{str(original.text)}")
+            logger.warning("".join(traceback.format_tb(original.__traceback__)))
+            logger.warning(ctx.__dict__)
+            owner = bot.get_user(bot.owner_id)
+            await owner.send(f"**Error in {ctx.invoked_with}**:\n{str(original.text)}")
+    else:
+        logger.warning(f"**Error in {ctx.invoked_with}**:\n{str(error)}")
+        logger.warning("".join(traceback.format_tb(error.__traceback__)))
+        logger.warning(ctx.__dict__)
+        owner = bot.get_user(bot.owner_id)
+        await owner.send(f"**Error in {ctx.invoked_with}**:\n{str(error)}")
 
 
 if __name__ == "__main__":

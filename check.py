@@ -8,7 +8,7 @@ config.read("config.ini")
 
 
 def is_owner_check(message):
-    return message.author.id == config["DEFAULT"]["owner_id"]
+    return message.author.id == int(config["DEFAULT"]["owner_id"])
 
 
 def is_owner():
