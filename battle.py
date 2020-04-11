@@ -500,13 +500,6 @@ class Battle(commands.Cog, name="Battle"):
                     battle_text = ""
                     type_text = ""
                     time_text = ""
-                if len(battle_text) > 800:
-                    embed.add_field(name="Battle", value=battle_text, inline=True)
-                    embed.add_field(name="Type", value=type_text, inline=True)
-                    embed.add_field(name="Time", value=time_text, inline=True)
-                    battle_text = ""
-                    type_text = ""
-                    time_text = ""
 
                 battle = data["battles"][battle_id]
                 battle["started_since"] = data["time"] - battle["start"]
@@ -524,13 +517,21 @@ class Battle(commands.Cog, name="Battle"):
                 ]
 
                 for division in divisions:
-                    battle_text = "{}{}-{} [{}](https://www.erepublik.com/en/military/battlefield/{})\n".format(
-                        battle_text,
+                    battle_text_new = "{}-{} [{}](https://www.erepublik.com/en/military/battlefield/{})\n".format(
                         self.utils.get_country_flag(battle["inv"]["id"]),
                         self.utils.get_country_flag(battle["def"]["id"]),
                         battle["region"]["name"],
                         battle["id"],
                     )
+                    if len(battle_text) + len(battle_text_new) > 1024:
+                        embed.add_field(name="Battle", value=battle_text, inline=True)
+                        embed.add_field(name="Type", value=type_text, inline=True)
+                        embed.add_field(name="Time", value=time_text, inline=True)
+                        battle_text = battle_text_new
+                        type_text = ""
+                        time_text = ""
+                    else:
+                        battle_text += battle_text_new
                     if division[1] == 2:
                         if division[2] == 5:
                             type_text = "{}Most Contested-D{}\n".format(
@@ -557,10 +558,7 @@ class Battle(commands.Cog, name="Battle"):
                 embed.add_field(name="Type", value=type_text, inline=True)
                 embed.add_field(name="Time", value=time_text, inline=True)
             else:
-                print(len(embed))
                 await ctx.message.channel.send("", embed=embed)
-            print(len(embed))
-            await ctx.message.channel.send("", embed=embed)
         else:
             await ctx.message.channel.send("No epics or full-scale ongoing right now")
 
