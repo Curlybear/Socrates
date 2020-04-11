@@ -1,9 +1,11 @@
-import discord
-from discord.ext import commands
 import configparser
-import logging
-import requests
 import json
+import logging
+from os.path import join
+
+import discord
+import requests
+from discord.ext import commands
 
 import ereputils
 
@@ -451,6 +453,89 @@ class Battle(commands.Cog, name="Battle"):
             await ctx.message.channel.send("", embed=embed)
         else:
             await ctx.message.channel.send("No SH available at the moment")
+
+    @commands.command(pass_context=True, aliases=["EPIC"])
+    async def epic(self, ctx):
+        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
+        r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
+        data = json.loads(r.text)
+        battle_ids = [
+            battle_id
+            for battle_id in data["battles"]
+            if any(
+                [
+                    True
+                    for div in data["battles"][battle_id]["div"]
+                    if data["battles"][battle_id]["div"][div]["epic"]
+                    and not data["battles"][battle_id]["div"][div]["division_end"]
+                ]
+            )
+        ]
+
+        if len(battle_ids):
+            battle_text = ""
+            type_text = ""
+            time_text = ""
+            embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+            embed.set_author(name="Epics")
+            embed.set_footer(
+                text="Powered by https://erepublik.tools",
+                icon_url="https://erepublik.tools/assets/img/icon76.png",
+            )
+            for battle_id in battle_ids:
+                if len(battle_text) > 900:
+                    embed.add_field(name="Battle", value=battle_text, inline=True)
+                    embed.add_field(name="Type", value=type_text, inline=True)
+                    embed.add_field(name="Time", value=time_text, inline=True)
+                    battle_text = ""
+                    type_text = ""
+                    time_text = ""
+
+                battle = data["battles"][battle_id]
+                battle["started_since"] = data["time"] - battle["start"]
+                divisions = [
+                    (
+                        battle["div"][div]["div"],
+                        battle["div"][div]["epic"],
+                        battle["div"][div]["epic_type"],
+                    )
+                    for div in [
+                        div_id
+                        for div_id in battle["div"]
+                        if battle["div"][div_id]["epic"]
+                    ]
+                ]
+
+                for division in divisions:
+                    print(battle_id, division, sep=" - ")
+                    battle_text = "{}{}-{} [{}](https://www.erepublik.com/en/military/battlefield/{})\n".format(
+                        battle_text,
+                        self.utils.get_country_flag(battle["inv"]["id"]),
+                        self.utils.get_country_flag(battle["def"]["id"]),
+                        battle["region"]["name"],
+                        battle["id"],
+                    )
+                    if division[1] == 2:
+                        if division[2] == 5:
+                            type_text = "{}Most Contested-D{}\n".format(
+                                type_text, division[0]
+                            )
+                        else:
+                            type_text = "{}Epic-D{}\n".format(type_text, division[0])
+                    else:
+                        type_text = "{}Fullscale-D{}\n".format(type_text, division[0])
+                    time_text = "{}+{}m{}s\n".format(
+                        time_text,
+                        battle["started_since"] // 60,
+                        battle["started_since"] % 60,
+                    )
+
+            embed.add_field(name="Battle", value=battle_text, inline=True)
+            embed.add_field(name="Type", value=type_text, inline=True)
+            embed.add_field(name="Time", value=time_text, inline=True)
+            await ctx.message.channel.send("", embed=embed)
+        else:
+            await ctx.message.channel.send("No epics or full-scale ongoing right now")
 
 
 def setup(bot):
