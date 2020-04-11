@@ -483,7 +483,7 @@ class Battle(commands.Cog, name="Battle"):
                 icon_url="https://erepublik.tools/assets/img/icon76.png",
             )
             for battle_id in battle_ids:
-                if len(embed) > 5000:
+                if len(embed) > 4000:
                     embed.add_field(name="Battle", value=battle_text, inline=True)
                     embed.add_field(name="Type", value=type_text, inline=True)
                     embed.add_field(name="Time", value=time_text, inline=True)
