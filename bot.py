@@ -49,7 +49,7 @@ syslog_handler.setFormatter(formatter_syslog)
 # add the handlers to the logger
 logger.addHandler(handler)
 logger.addHandler(handlerError)
-# logger.addHandler(syslog_handler)
+logger.addHandler(syslog_handler)
 
 # API Key
 apiKey = config["DEFAULT"]["api_key"]
