@@ -483,6 +483,17 @@ class Battle(commands.Cog, name="Battle"):
                 icon_url="https://erepublik.tools/assets/img/icon76.png",
             )
             for battle_id in battle_ids:
+                if len(embed) > 5000:
+                    embed.add_field(name="Battle", value=battle_text, inline=True)
+                    embed.add_field(name="Type", value=type_text, inline=True)
+                    embed.add_field(name="Time", value=time_text, inline=True)
+                    await ctx.message.channel.send("", embed=embed)
+                    embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+                    embed.set_author(name="Epics")
+                    embed.set_footer(
+                        text="Powered by https://erepublik.tools",
+                        icon_url="https://erepublik.tools/assets/img/icon76.png",
+                    )
                 if len(battle_text) > 800:
                     embed.add_field(name="Battle", value=battle_text, inline=True)
                     embed.add_field(name="Type", value=type_text, inline=True)
