@@ -1,17 +1,18 @@
 import configparser
 import logging
+import traceback
 from logging.handlers import SysLogHandler
 
 import discord
 from discord.ext import commands
 
-import check
-import misc
-import country
-import user
 import battle
-import wiki
+import check
+import country
 import market
+import misc
+import user
+import wiki
 
 # Config reader
 config = configparser.ConfigParser()
@@ -35,6 +36,11 @@ handler = logging.FileHandler("bot.log")
 handler.setLevel(logging.DEBUG)
 handler.setFormatter(formatter_file)
 
+# create a file error handler
+handlerError = logging.FileHandler("botError.log")
+handlerError.setLevel(logging.WARNING)
+handlerError.setFormatter(formatter_file)
+
 # create a syslog handler
 syslog_handler = SysLogHandler(address="/dev/log")
 syslog_handler.setLevel(logging.INFO)
@@ -42,14 +48,19 @@ syslog_handler.setFormatter(formatter_syslog)
 
 # add the handlers to the logger
 logger.addHandler(handler)
-logger.addHandler(syslog_handler)
+logger.addHandler(handlerError)
+# logger.addHandler(syslog_handler)
 
 # API Key
 apiKey = config["DEFAULT"]["api_key"]
 
 # Instantiate bot
 description = ""
-bot = commands.Bot(command_prefix="!", description=description)
+bot = commands.Bot(
+    command_prefix="!",
+    description=description,
+    owner_id=int(config["DEFAULT"]["owner_id"]),
+)
 bot.remove_command("help")
 
 # this specifies what extensions to load when the bot starts up
@@ -108,6 +119,16 @@ async def on_message(message):
         await message.add_reaction("❤")
         logger.info("Mentioned by " + message.author.name)
     await bot.process_commands(message)
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    logger.warning(f"**Error in {ctx.invoked_with}**:\n{str(error.original.text)}")
+    logger.warning("".join(traceback.format_tb(error.original.__traceback__)))
+    logger.warning(ctx.__dict__)
+    owner = bot.get_user(bot.owner_id)
+
+    await owner.send(f"**Error in {ctx.invoked_with}**:\n{str(error.original.text)}")
 
 
 if __name__ == "__main__":
