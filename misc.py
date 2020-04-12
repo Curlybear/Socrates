@@ -187,6 +187,30 @@ class Misc(commands.Cog, name="Misc"):
         )
         await ctx.message.channel.send("", embed=em)
 
+    @commands.command(pass_context=True)
+    async def botinfo(self, ctx):
+        embed = discord.Embed(title="Socrates Info", color=0xA9152B)
+        embed.add_field(
+            name="Uptime",
+            value=str(datetime.datetime.now() - self.bot.uptimeStart)[:-7],
+            inline=True,
+        )
+        embed.add_field(name="Created On", value="2017-04-19", inline=True)
+        embed.add_field(name="** **", value="** **", inline=True)
+        embed.add_field(name="Guilds Serving", value=len(self.bot.guilds), inline=True)
+        embed.add_field(name="Users Serving", value=len(self.bot.users), inline=True)
+        embed.add_field(name="** **", value="** **", inline=True)
+        embed.add_field(
+            name="Bot Invite Link",
+            value="https://discordapp.com/oauth2/authorize?client_id=304725683995934723&scope=bot&permissions=0",
+            inline=True,
+        )
+        embed.set_footer(
+            text="Curlybear#7847", icon_url="https://i.imgur.com/Umqjr4M.png"
+        )
+        embed.set_thumbnail(url="https://i.imgur.com/1ZBsqym.png")
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Misc(bot))

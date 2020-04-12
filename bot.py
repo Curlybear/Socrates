@@ -1,6 +1,7 @@
 import configparser
 import logging
 import traceback
+from datetime import datetime
 from logging.handlers import SysLogHandler
 
 import discord
@@ -62,6 +63,7 @@ bot = commands.Bot(
     owner_id=int(config["DEFAULT"]["owner_id"]),
 )
 bot.remove_command("help")
+bot.uptimeStart = datetime.now()
 
 # this specifies what extensions to load when the bot starts up
 startup_extensions = ["misc", "country", "user", "battle", "wiki", "market"]
