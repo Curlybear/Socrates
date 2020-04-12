@@ -13,7 +13,6 @@ import country
 import market
 import misc
 import user
-import wiki
 
 # Config reader
 config = configparser.ConfigParser()
@@ -66,7 +65,7 @@ bot.remove_command("help")
 bot.uptimeStart = datetime.now()
 
 # this specifies what extensions to load when the bot starts up
-startup_extensions = ["misc", "country", "user", "battle", "wiki", "market"]
+startup_extensions = ["misc", "country", "user", "battle", "market"]
 
 
 @bot.command()
@@ -128,11 +127,17 @@ async def on_message(message):
 
 
 @bot.event
+async def on_command(ctx):
+    logger.info(f"{ctx.message.content} - User: {ctx.message.author}")
+    return
+
+
+@bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandInvokeError):
         original = error.original
         if not isinstance(original, discord.HTTPException):
-            logger.warning(f"**Error in {ctx.invoked_with}**:\n{str(original.text)}")
+            logger.warning(f"**Error in {ctx.invoked_with}**:{str(original.text)}")
             logger.warning("".join(traceback.format_tb(original.__traceback__)))
             logger.warning(ctx.__dict__)
             owner = bot.get_user(bot.owner_id)
@@ -140,7 +145,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.errors.CommandNotFound):
         pass
     else:
-        logger.warning(f"**Error in {ctx.invoked_with}**:\n{str(error)}")
+        logger.warning(f"**Error in {ctx.invoked_with}**:{str(error)}")
         logger.warning("".join(traceback.format_tb(error.__traceback__)))
         logger.warning(ctx.__dict__)
         owner = bot.get_user(bot.owner_id)

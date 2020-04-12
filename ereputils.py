@@ -1,7 +1,4 @@
 import erepdb
-import logging
-
-logger = logging.getLogger("Socrates." + __name__)
 
 
 class ErepUtils:
@@ -58,33 +55,4 @@ class ErepUtils:
         data = self.db.queryall("SELECT * FROM users WHERE id = ?", [id])
         if not data:
             raise Exception("User not found")
-        return data
-
-    def search_wiki(self, query):
-        query = (
-            query.replace("_", "\_")
-            .replace("%", "\%")
-            .replace("?", "\?")
-            .replace("*", "\*")
-        )
-        data = self.db.queryall(
-            "SELECT * FROM wiki WHERE tag LIKE ? ESCAPE '\\'", ["%" + query + "%"]
-        )
-        return data
-
-    def get_wiki_categories(self):
-        data = self.db.queryall("SELECT DISTINCT category FROM wiki", [])
-        return data
-
-    def get_wiki_entries_for_category(self, category):
-        category = (
-            category.replace("_", "\_")
-            .replace("%", "\%")
-            .replace("?", "\?")
-            .replace("*", "\*")
-        )
-        data = self.db.queryall(
-            "SELECT DISTINCT tag FROM wiki WHERE category LIKE ? ESCAPE '\\'",
-            [category + "%"],
-        )
         return data

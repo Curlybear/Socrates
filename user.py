@@ -1,14 +1,11 @@
 import discord
 from discord.ext import commands
 import configparser
-import logging
 import requests
 import json
 import ranks
 
 import ereputils
-
-logger = logging.getLogger("Socrates." + __name__)
 
 # Config reader
 config = configparser.ConfigParser()
@@ -132,8 +129,6 @@ class User(commands.Cog, name="User"):
 
     @commands.command(pass_context=True, aliases=["USER"])
     async def user(self, ctx, *, in_value):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
-
         citizen = await self.find_user(ctx, in_value)
 
         embed = discord.Embed(colour=discord.Colour(0xF5A623))
@@ -228,7 +223,6 @@ class User(commands.Cog, name="User"):
 
     @history.command(pass_context=True, aliases=["CS"])
     async def cs(self, ctx, *, in_value: str):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         user_text = ["", "", "", ""]
 
         found_user = await self.find_user(ctx, in_value)
@@ -291,7 +285,6 @@ class User(commands.Cog, name="User"):
 
     @history.command(pass_context=True, aliases=["NAME"])
     async def name(self, ctx, *, in_value: str):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         user_text = ["", "", "", ""]
 
         found_user = await self.find_user(ctx, in_value)
@@ -350,7 +343,6 @@ class User(commands.Cog, name="User"):
 
     @history.command(pass_context=True, aliases=["MU"])
     async def mu(self, ctx, *, in_value: str):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         user_text = ["", "", "", ""]
 
         found_user = await self.find_user(ctx, in_value)
@@ -419,7 +411,6 @@ class User(commands.Cog, name="User"):
 
     @history.command(pass_context=True, aliases=["PARTY"])
     async def party(self, ctx, *, in_value: str):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         user_text = ["", "", "", ""]
 
         found_user = await self.find_user(ctx, in_value)

@@ -1,6 +1,5 @@
 import configparser
 import json
-import logging
 from os.path import join
 
 import discord
@@ -8,9 +7,6 @@ import requests
 from discord.ext import commands
 
 import ereputils
-
-logger = logging.getLogger("Socrates." + __name__)
-
 
 # Config reader
 config = configparser.ConfigParser()
@@ -33,7 +29,6 @@ class Battle(commands.Cog, name="Battle"):
 
     @battle.command(pass_context=True, aliases=["INFO"])
     async def info(self, ctx, battle_id):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         r = requests.get(
             "https://api.erepublik-deutschland.de/"
             + apiKey
@@ -126,7 +121,6 @@ class Battle(commands.Cog, name="Battle"):
 
     @battle.command(pass_context=True, aliases=["CO"])
     async def co(self, ctx, battle_id):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         r = requests.get(
             "https://api.erepublik-deutschland.de/"
             + apiKey
@@ -266,7 +260,6 @@ class Battle(commands.Cog, name="Battle"):
 
     @commands.command(pass_context=True, aliases=["RH"])
     async def rh(self, ctx, *, in_country):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         try:
             if in_country != "World":
                 uid = self.utils.get_country_id(in_country)
@@ -364,14 +357,12 @@ class Battle(commands.Cog, name="Battle"):
                 embed.add_field(name="Occupied by", value=occupied_text, inline=True)
             await ctx.message.channel.send("", embed=embed)
         except:
-            logger.info("\tCountry ***" + in_country + "*** not recognized")
             await ctx.message.channel.send(
                 "Country ***" + in_country + "*** not recognized"
             )
 
     @commands.command(pass_context=True, aliases=["SH"])
     async def sh(self, ctx):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
         data = json.loads(r.text)
         battles = data["battles"]
@@ -456,7 +447,6 @@ class Battle(commands.Cog, name="Battle"):
 
     @commands.command(pass_context=True, aliases=["EPIC"])
     async def epic(self, ctx):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
         data = json.loads(r.text)
         battle_ids = [

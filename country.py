@@ -1,16 +1,12 @@
 import discord
 from discord.ext import commands
 import configparser
-import logging
 import requests
 import json
 import datetime
 from bs4 import BeautifulSoup
 
 import ereputils
-
-logger = logging.getLogger("Socrates." + __name__)
-
 
 # Config reader
 config = configparser.ConfigParser()
@@ -28,7 +24,6 @@ class Country(commands.Cog, name="Country"):
 
     @commands.command(pass_context=True, aliases=["MPP"])
     async def mpp(self, ctx, *, in_country: str):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         try:
             uid = self.utils.get_country_id(in_country)
             country = self.utils.get_country_name(uid)
@@ -76,14 +71,12 @@ class Country(commands.Cog, name="Country"):
             embed.add_field(name="Expiration date", value=expiration_text, inline=True)
             await ctx.message.channel.send("", embed=embed)
         except:
-            logger.info("\tCountry ***" + in_country + "*** not recognized")
             await ctx.message.channel.send(
                 "Country ***" + in_country + "*** not recognized"
             )
 
     @commands.command(pass_context=True, aliases=["MPPSRAW"])
     async def mppsraw(self, ctx):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         mpp_text = ""
 
         r = requests.get("http://api.erepublik.com/map/data/")
@@ -126,7 +119,6 @@ class Country(commands.Cog, name="Country"):
 
     @commands.command(pass_context=True, aliases=["CINFO"])
     async def cinfo(self, ctx, *, in_country: str):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         try:
             uid = self.utils.get_country_id(in_country)
             country = self.utils.get_country_name(uid)
@@ -225,14 +217,12 @@ class Country(commands.Cog, name="Country"):
 
             await ctx.message.channel.send("", embed=embed)
         except:
-            logger.info("\tCountry ***" + in_country + "*** not recognized")
             await ctx.message.channel.send(
                 "Country ***" + in_country + "*** not recognized"
             )
 
     @commands.command(pass_context=True)
     async def jobs(self, ctx, *, in_country=None):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         try:
             if in_country:
                 uid = self.utils.get_country_id(in_country)
@@ -299,7 +289,6 @@ class Country(commands.Cog, name="Country"):
 
             await ctx.message.channel.send("", embed=embed)
         except:
-            logger.info("\tCountry ***" + in_country + "*** not recognized")
             await ctx.message.channel.send(
                 "Country ***" + in_country + "*** not recognized"
             )

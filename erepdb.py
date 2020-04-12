@@ -1,8 +1,5 @@
 import sqlite3
 import configparser
-import logging
-
-logger = logging.getLogger("Socrates." + __name__)
 
 # Config reader
 config = configparser.ConfigParser()

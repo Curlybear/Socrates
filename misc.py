@@ -1,15 +1,10 @@
 import datetime
-import logging
-import traceback
-
 import discord
 from discord import message
 from discord.ext import commands
 
 import check
 import ereputils
-
-logger = logging.getLogger("Socrates." + __name__)
 
 
 class Misc(commands.Cog, name="Misc"):
@@ -20,7 +15,6 @@ class Misc(commands.Cog, name="Misc"):
     @commands.command(pass_context=True, aliases=["PING"])
     async def ping(self, ctx):
         """Pings the bot"""
-        logger.info("!ping - User: " + str(ctx.message.author))
         em = discord.Embed(
             title="Pong", description=ctx.message.content, colour=0x3D9900
         )
@@ -28,7 +22,6 @@ class Misc(commands.Cog, name="Misc"):
 
     @commands.command(pass_context=True, aliases=["HELP"])
     async def help(self, ctx):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         em = discord.Embed(
             title="Help", description="Available commands", colour=0x0053A9
         )
@@ -106,8 +99,6 @@ class Misc(commands.Cog, name="Misc"):
 
     @commands.command(pass_context=True, aliases=["CONVERT"])
     async def convert(self, ctx, in_value: str):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
-
         start_date = datetime.datetime(day=21, month=11, year=2007)
         try:
             if self.utils.is_number(in_value):
@@ -129,36 +120,18 @@ class Misc(commands.Cog, name="Misc"):
                 )
                 await ctx.message.channel.send("", embed=em)
         except:
-            traceback.print_exc()
-            logger.info("   Invalid input")
             await self.bot.say("Invalid input")
 
     @commands.command(pass_context=True, aliases=["INVITE"])
     async def invite(self, ctx):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         await ctx.message.channel.send(
             "To invite me to your own server click the following link: <https://discordapp.com/oauth2/authorize?client_id=304725683995934723&scope=bot&permissions=0>"
         )
-
-    @commands.command(pass_context=True, aliases=["ANNOUNCEMENT"])
-    @check.is_authorized_staff()
-    async def announcement(self, ctx, *, message: str):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
-        for server in self.bot.servers:
-            try:
-                await ctx.message.channel.send(
-                    "\n\nSent by: *" + str(ctx.message.author) + "*"
-                )
-                logger.info("   Sent to: " + str(server))
-            except:
-                logger.info("   Not sent to: " + str(server))
-                pass
 
     @commands.command(
         pass_context=True, aliases=["INTHEFOLLOWINGWEEKS", "itfw", "ITFW"]
     )
     async def inthefollowingweeks(self, ctx):
-        logger.info(ctx.message.content + " - User: " + str(ctx.message.author))
         rip_date = datetime.datetime(2017, 5, 19, 13, 38)
         elapsed_time = datetime.datetime.utcnow() - rip_date
         em = discord.Embed(
