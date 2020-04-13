@@ -133,6 +133,7 @@ class User(commands.Cog, name="User"):
 
     @commands.command(pass_context=True, aliases=["USER"])
     async def user(self, ctx, *, in_value):
+        """Returns information for the queried user. Input can be ID or username"""
         citizen = await self.find_user(ctx, in_value)
 
         embed = discord.Embed(colour=discord.Colour(0xF5A623))

@@ -7,12 +7,7 @@ from logging.handlers import SysLogHandler
 import discord
 from discord.ext import commands
 
-import battle
 import check
-import country
-import market
-import misc
-import user
 
 # Config reader
 config = configparser.ConfigParser()
@@ -56,19 +51,20 @@ apiKey = config["DEFAULT"]["api_key"]
 
 # Instantiate bot
 description = ""
+help_attrs = dict(hidden=True)
 bot = commands.Bot(
     command_prefix="!",
     description=description,
     owner_id=int(config["DEFAULT"]["owner_id"]),
+    help_attrs=help_attrs,
 )
-bot.remove_command("help")
 bot.uptimeStart = datetime.now()
 
 # this specifies what extensions to load when the bot starts up
-startup_extensions = ["misc", "country", "user", "battle", "market"]
+startup_extensions = ["country", "user", "battle", "market", "meta"]
 
 
-@bot.command()
+@bot.command(hidden=True)
 @check.is_owner()
 async def load(ctx, extension_name: str):
     """Loads an extension."""
@@ -80,7 +76,7 @@ async def load(ctx, extension_name: str):
     logger.info("{} loaded.".format(extension_name))
 
 
-@bot.command()
+@bot.command(hidden=True)
 @check.is_owner()
 async def unload(ctx, extension_name: str):
     """Unloads an extension."""
@@ -88,7 +84,7 @@ async def unload(ctx, extension_name: str):
     logger.info("{} unloaded.".format(extension_name))
 
 
-@bot.command()
+@bot.command(hidden=True)
 @check.is_owner()
 async def presence(ctx, *, presence_text: str):
     await bot.change_presence(activity=discord.Game(name=presence_text))
@@ -138,15 +134,19 @@ async def on_command_error(ctx, error):
         await ctx.author.send("This command cannot be used in private messages.")
     elif isinstance(error, commands.DisabledCommand):
         await ctx.author.send("Sorry. This command is disabled and cannot be used.")
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.author.send(
+            str(error) + "\n`!help " + ctx.invoked_with + "` for more infomation"
+        )
     elif isinstance(error, commands.CommandInvokeError):
         original = error.original
         if not isinstance(original, discord.HTTPException):
-            logger.warning(f"**Error in {ctx.invoked_with}**:{str(original.text)}")
+            logger.warning(f"**Error in {ctx.invoked_with}**:{str(original)}")
             logger.warning("".join(traceback.format_tb(original.__traceback__)))
             logger.warning(ctx.__dict__)
             owner = bot.get_user(bot.owner_id)
             await owner.send(
-                f"**Error original in {ctx.invoked_with}**:\n{str(original.text)}"
+                f"**Error original in {ctx.invoked_with}**:\n{str(original)}"
             )
     elif isinstance(error, commands.errors.CommandNotFound):
         pass

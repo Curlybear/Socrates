@@ -264,6 +264,7 @@ class Battle(commands.Cog, name="Battle"):
 
     @commands.command(pass_context=True, aliases=["RH"])
     async def rh(self, ctx, *, in_country):
+        """Returns the list of occupied regions of a given country"""
         try:
             if in_country != "World":
                 uid = self.utils.get_country_id(in_country)
@@ -367,6 +368,7 @@ class Battle(commands.Cog, name="Battle"):
 
     @commands.command(pass_context=True, aliases=["SH"])
     async def sh(self, ctx):
+        """Returns the list of the upcoming air rounds as well as air rounds with limited damage done."""
         r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
         data = json.loads(r.text)
         battles = data["battles"]
@@ -451,6 +453,7 @@ class Battle(commands.Cog, name="Battle"):
 
     @commands.command(pass_context=True, aliases=["EPIC"])
     async def epic(self, ctx):
+        """Returns the list of epic and fullscale battles"""
         r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
         data = json.loads(r.text)
         battle_ids = [

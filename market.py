@@ -24,9 +24,10 @@ class Market(commands.Cog, name="Market"):
         if isinstance(error, (commands.ArgumentParsingError)):
             await ctx.send(error)
 
-    @commands.command(pass_context=True, aliases=["FOOD"])
-    async def food(self, ctx, in_quality: str):
-        if not self.utils.is_number(in_quality):
+    @commands.command(pass_context=True)
+    async def food(self, ctx, quality: str):
+        """Returns a list of the best food offers for the given quality"""
+        if not self.utils.is_number(quality):
             raise commands.ArgumentParsingError(
                 "Invalid input. Expected input is a number, e.g. `!food 1`"
             )
@@ -34,7 +35,7 @@ class Market(commands.Cog, name="Market"):
             "https://api.erepublik.tools/"
             + apiVersion
             + "/market/item/best-offers/1/"
-            + in_quality
+            + quality
             + "?key="
             + apiKey
         )
@@ -72,9 +73,9 @@ class Market(commands.Cog, name="Market"):
 
         embed = discord.Embed(colour=discord.Colour(0xCE2C19))
         embed.set_author(
-            name="Best Q" + in_quality + " food offers",
+            name="Best Q" + quality + " food offers",
             icon_url="https://static.erepublik.tools/assets/img/erepublik/industry/1_"
-            + in_quality
+            + quality
             + ".png",
         )
         embed.set_footer(
@@ -88,8 +89,9 @@ class Market(commands.Cog, name="Market"):
         await ctx.message.channel.send("", embed=embed)
 
     @commands.command(pass_context=True, aliases=["WEAPONS"])
-    async def weapons(self, ctx, in_quality: str):
-        if not self.utils.is_number(in_quality):
+    async def weapons(self, ctx, quality: str):
+        """Returns a list of the best weapons offers for the given quality"""
+        if not self.utils.is_number(quality):
             raise commands.ArgumentParsingError(
                 "Invalid input. Expected input is a number, e.g. `!weapons 1`"
             )
@@ -98,7 +100,7 @@ class Market(commands.Cog, name="Market"):
             "https://api.erepublik.tools/"
             + apiVersion
             + "/market/item/best-offers/2/"
-            + in_quality
+            + quality
             + "?key="
             + apiKey
         )
@@ -136,9 +138,9 @@ class Market(commands.Cog, name="Market"):
 
         embed = discord.Embed(colour=discord.Colour(0xCE2C19))
         embed.set_author(
-            name="Best Q" + in_quality + " weapons offers",
+            name="Best Q" + quality + " weapons offers",
             icon_url="https://static.erepublik.tools/assets/img/erepublik/industry/2_"
-            + in_quality
+            + quality
             + ".png",
         )
         embed.set_footer(
@@ -152,8 +154,9 @@ class Market(commands.Cog, name="Market"):
         await ctx.message.channel.send("", embed=embed)
 
     @commands.command(pass_context=True, aliases=["AIRCRAFTS"])
-    async def aircrafts(self, ctx, in_quality: str = "1"):
-        if not self.utils.is_number(in_quality):
+    async def aircrafts(self, ctx, quality: str = "1"):
+        """Returns a list of the best aircrafts offers for the given quality"""
+        if not self.utils.is_number(quality):
             raise commands.ArgumentParsingError(
                 "Invalid input. Expected input is a number, e.g. `!aircrafts 1`"
             )
@@ -162,7 +165,7 @@ class Market(commands.Cog, name="Market"):
             "https://api.erepublik.tools/"
             + apiVersion
             + "/market/item/best-offers/23/"
-            + in_quality
+            + quality
             + "?key="
             + apiKey
         )
@@ -200,9 +203,9 @@ class Market(commands.Cog, name="Market"):
 
         embed = discord.Embed(colour=discord.Colour(0xCE2C19))
         embed.set_author(
-            name="Best Q" + in_quality + " aircraft offers",
+            name="Best Q" + quality + " aircraft offers",
             icon_url="https://static.erepublik.tools/assets/img/erepublik/industry/23_"
-            + in_quality
+            + quality
             + ".png",
         )
         embed.set_footer(
@@ -216,8 +219,9 @@ class Market(commands.Cog, name="Market"):
         await ctx.message.channel.send("", embed=embed)
 
     @commands.command(pass_context=True, aliases=["HOUSES"])
-    async def houses(self, ctx, in_quality: str):
-        if not self.utils.is_number(in_quality):
+    async def houses(self, ctx, quality: str):
+        """Returns a list of the best houses offers for the given quality"""
+        if not self.utils.is_number(quality):
             raise commands.ArgumentParsingError(
                 "Invalid input. Expected input is a number, e.g. `!houses 1`"
             )
@@ -226,7 +230,7 @@ class Market(commands.Cog, name="Market"):
             "https://api.erepublik.tools/"
             + apiVersion
             + "/market/item/best-offers/4/"
-            + in_quality
+            + quality
             + "?key="
             + apiKey
         )
@@ -264,9 +268,9 @@ class Market(commands.Cog, name="Market"):
 
         embed = discord.Embed(colour=discord.Colour(0xCE2C19))
         embed.set_author(
-            name="Best Q" + in_quality + " house offers",
+            name="Best Q" + quality + " house offers",
             icon_url="https://static.erepublik.tools/assets/img/erepublik/industry/4_"
-            + in_quality
+            + quality
             + ".png",
         )
         embed.set_footer(
@@ -280,8 +284,9 @@ class Market(commands.Cog, name="Market"):
         await ctx.message.channel.send("", embed=embed)
 
     @commands.command(pass_context=True, aliases=["TICKETS"])
-    async def tickets(self, ctx, in_quality: str):
-        if not self.utils.is_number(in_quality):
+    async def tickets(self, ctx, quality: str):
+        """Returns a list of the best tickets offers for the given quality"""
+        if not self.utils.is_number(quality):
             raise commands.ArgumentParsingError(
                 "Invalid input. Expected input is a number, e.g. `!tickets 1`"
             )
@@ -290,7 +295,7 @@ class Market(commands.Cog, name="Market"):
             "https://api.erepublik.tools/"
             + apiVersion
             + "/market/item/best-offers/3/"
-            + in_quality
+            + quality
             + "?key="
             + apiKey
         )
@@ -328,9 +333,9 @@ class Market(commands.Cog, name="Market"):
 
         embed = discord.Embed(colour=discord.Colour(0xCE2C19))
         embed.set_author(
-            name="Best Q" + in_quality + " ticket offers",
+            name="Best Q" + quality + " ticket offers",
             icon_url="https://static.erepublik.tools/assets/img/erepublik/industry/3_"
-            + in_quality
+            + quality
             + ".png",
         )
         embed.set_footer(
@@ -345,6 +350,7 @@ class Market(commands.Cog, name="Market"):
 
     @commands.command(pass_context=True, aliases=["FRM"])
     async def frm(self, ctx):
+        """Returns a list of the best frm offers"""
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -401,6 +407,7 @@ class Market(commands.Cog, name="Market"):
 
     @commands.command(pass_context=True, aliases=["WRM"])
     async def wrm(self, ctx):
+        """Returns a list of the best wrm offers"""
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -457,6 +464,7 @@ class Market(commands.Cog, name="Market"):
 
     @commands.command(pass_context=True, aliases=["HRM"])
     async def hrm(self, ctx):
+        """Returns a list of the best hrm offers"""
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -513,6 +521,7 @@ class Market(commands.Cog, name="Market"):
 
     @commands.command(pass_context=True, aliases=["ARM"])
     async def arm(self, ctx):
+        """Returns a list of the best arm offers"""
 
         r = requests.get(
             "https://api.erepublik.tools/"

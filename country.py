@@ -28,6 +28,7 @@ class Country(commands.Cog, name="Country"):
 
     @commands.command(pass_context=True, aliases=["MPP"])
     async def mpp(self, ctx, *, in_country: str):
+        """Returns the mpp list for the given country"""
         try:
             uid = self.utils.get_country_id(in_country)
             country = self.utils.get_country_name(uid)
@@ -81,6 +82,7 @@ class Country(commands.Cog, name="Country"):
 
     @commands.command(pass_context=True, aliases=["MPPSRAW"])
     async def mppsraw(self, ctx):
+        """Returns a link to the raw list of all mpps"""
         mpp_text = ""
 
         r = requests.get("http://api.erepublik.com/map/data/")
@@ -227,6 +229,7 @@ class Country(commands.Cog, name="Country"):
 
     @commands.command(pass_context=True)
     async def jobs(self, ctx, *, in_country=None):
+        """Returns the top jobs of a given country, overall if none is provided"""
         try:
             if in_country:
                 uid = self.utils.get_country_id(in_country)
