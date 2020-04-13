@@ -22,6 +22,10 @@ class Battle(commands.Cog, name="Battle"):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, (commands.ArgumentParsingError)):
+            await ctx.send(error)
+
     @commands.group(pass_context=True, aliases=["BATTLE"])
     async def battle(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -357,7 +361,7 @@ class Battle(commands.Cog, name="Battle"):
                 embed.add_field(name="Occupied by", value=occupied_text, inline=True)
             await ctx.message.channel.send("", embed=embed)
         except:
-            await ctx.message.channel.send(
+            raise commands.ArgumentParsingError(
                 "Country ***" + in_country + "*** not recognized"
             )
 

@@ -12,6 +12,10 @@ class Misc(commands.Cog, name="Misc"):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, (commands.ArgumentParsingError)):
+            await ctx.send(error)
+
     @commands.command(pass_context=True, aliases=["PING"])
     async def ping(self, ctx):
         """Pings the bot"""
@@ -120,7 +124,9 @@ class Misc(commands.Cog, name="Misc"):
                 )
                 await ctx.message.channel.send("", embed=em)
         except:
-            await self.bot.say("Invalid input")
+            raise commands.ArgumentParsingError(
+                "Invalid input. Expected format is erep day or date (dd/mm/yyyy)"
+            )
 
     @commands.command(pass_context=True, aliases=["INVITE"])
     async def invite(self, ctx):

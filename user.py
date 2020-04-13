@@ -21,6 +21,10 @@ class User(commands.Cog, name="User"):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, (commands.ArgumentParsingError)):
+            await ctx.send(error)
+
     async def find_user(self, ctx, in_value):
         user_text = ""
         citizen = ""
@@ -37,8 +41,8 @@ class User(commands.Cog, name="User"):
                 )
                 obj = json.loads(r.text)
                 citizen = obj["citizen"]
-            except Exception:
-                citizen = ""
+            except:
+                raise commands.ArgumentParsingError("Citizen not found")
         else:
             r = requests.get(
                 "https://api.erepublik.tools/v0/citizen?name="

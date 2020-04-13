@@ -134,14 +134,20 @@ async def on_command(ctx):
 
 @bot.event
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandInvokeError):
+    if isinstance(error, commands.NoPrivateMessage):
+        await ctx.author.send("This command cannot be used in private messages.")
+    elif isinstance(error, commands.DisabledCommand):
+        await ctx.author.send("Sorry. This command is disabled and cannot be used.")
+    elif isinstance(error, commands.CommandInvokeError):
         original = error.original
         if not isinstance(original, discord.HTTPException):
             logger.warning(f"**Error in {ctx.invoked_with}**:{str(original.text)}")
             logger.warning("".join(traceback.format_tb(original.__traceback__)))
             logger.warning(ctx.__dict__)
             owner = bot.get_user(bot.owner_id)
-            await owner.send(f"**Error in {ctx.invoked_with}**:\n{str(original.text)}")
+            await owner.send(
+                f"**Error original in {ctx.invoked_with}**:\n{str(original.text)}"
+            )
     elif isinstance(error, commands.errors.CommandNotFound):
         pass
     else:

@@ -22,6 +22,10 @@ class Country(commands.Cog, name="Country"):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, (commands.ArgumentParsingError)):
+            await ctx.send(error)
+
     @commands.command(pass_context=True, aliases=["MPP"])
     async def mpp(self, ctx, *, in_country: str):
         try:
@@ -71,7 +75,7 @@ class Country(commands.Cog, name="Country"):
             embed.add_field(name="Expiration date", value=expiration_text, inline=True)
             await ctx.message.channel.send("", embed=embed)
         except:
-            await ctx.message.channel.send(
+            raise commands.ArgumentParsingError(
                 "Country ***" + in_country + "*** not recognized"
             )
 
@@ -217,7 +221,7 @@ class Country(commands.Cog, name="Country"):
 
             await ctx.message.channel.send("", embed=embed)
         except:
-            await ctx.message.channel.send(
+            raise commands.ArgumentParsingError(
                 "Country ***" + in_country + "*** not recognized"
             )
 
@@ -289,7 +293,7 @@ class Country(commands.Cog, name="Country"):
 
             await ctx.message.channel.send("", embed=embed)
         except:
-            await ctx.message.channel.send(
+            raise commands.ArgumentParsingError(
                 "Country ***" + in_country + "*** not recognized"
             )
 

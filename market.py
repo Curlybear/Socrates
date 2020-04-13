@@ -20,10 +20,16 @@ class Market(commands.Cog, name="Market"):
         self.bot = bot
         self.utils = ereputils.ErepUtils()
 
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, (commands.ArgumentParsingError)):
+            await ctx.send(error)
+
     @commands.command(pass_context=True, aliases=["FOOD"])
     async def food(self, ctx, in_quality: str):
         if not self.utils.is_number(in_quality):
-            return
+            raise commands.ArgumentParsingError(
+                "Invalid input. Expected input is a number, e.g. `!food 1`"
+            )
         r = requests.get(
             "https://api.erepublik.tools/"
             + apiVersion
@@ -84,7 +90,9 @@ class Market(commands.Cog, name="Market"):
     @commands.command(pass_context=True, aliases=["WEAPONS"])
     async def weapons(self, ctx, in_quality: str):
         if not self.utils.is_number(in_quality):
-            return
+            raise commands.ArgumentParsingError(
+                "Invalid input. Expected input is a number, e.g. `!weapons 1`"
+            )
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -146,7 +154,9 @@ class Market(commands.Cog, name="Market"):
     @commands.command(pass_context=True, aliases=["AIRCRAFTS"])
     async def aircrafts(self, ctx, in_quality: str = "1"):
         if not self.utils.is_number(in_quality):
-            return
+            raise commands.ArgumentParsingError(
+                "Invalid input. Expected input is a number, e.g. `!aircrafts 1`"
+            )
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -208,7 +218,9 @@ class Market(commands.Cog, name="Market"):
     @commands.command(pass_context=True, aliases=["HOUSES"])
     async def houses(self, ctx, in_quality: str):
         if not self.utils.is_number(in_quality):
-            return
+            raise commands.ArgumentParsingError(
+                "Invalid input. Expected input is a number, e.g. `!houses 1`"
+            )
 
         r = requests.get(
             "https://api.erepublik.tools/"
@@ -270,7 +282,9 @@ class Market(commands.Cog, name="Market"):
     @commands.command(pass_context=True, aliases=["TICKETS"])
     async def tickets(self, ctx, in_quality: str):
         if not self.utils.is_number(in_quality):
-            return
+            raise commands.ArgumentParsingError(
+                "Invalid input. Expected input is a number, e.g. `!tickets 1`"
+            )
 
         r = requests.get(
             "https://api.erepublik.tools/"
