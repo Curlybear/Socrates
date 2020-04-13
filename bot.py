@@ -135,7 +135,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.DisabledCommand):
         await ctx.author.send("Sorry. This command is disabled and cannot be used.")
     elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.author.send(
+        await ctx.send(
             str(error) + "\n`!help " + ctx.invoked_with + "` for more infomation"
         )
     elif isinstance(error, commands.CommandInvokeError):
@@ -148,7 +148,9 @@ async def on_command_error(ctx, error):
             await owner.send(
                 f"**Error original in {ctx.invoked_with}**:\n{str(original)}"
             )
-    elif isinstance(error, commands.errors.CommandNotFound):
+    elif isinstance(
+        error, (commands.ArgumentParsingError, commands.errors.CommandNotFound)
+    ):
         pass
     else:
         logger.warning(f"**Error in {ctx.invoked_with}**:{str(error)}")

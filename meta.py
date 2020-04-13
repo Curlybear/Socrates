@@ -223,7 +223,7 @@ class Meta(commands.Cog):
         self.bot.help_command = self.old_help_command
 
     async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument, commands.ArgumentParsingError):
+        if isinstance(error, (commands.BadArgument, commands.ArgumentParsingError)):
             await ctx.send(error)
 
     @commands.command(pass_context=True)
