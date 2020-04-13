@@ -121,7 +121,7 @@ class Country(commands.Cog, name="Country"):
         )
         await ctx.message.channel.send("", embed=em)
 
-    @commands.command(pass_context=True, aliases=["CINFO"])
+    @commands.command(pass_context=True, aliases=["CINFO"], enabled=False)
     async def cinfo(self, ctx, *, in_country: str):
         try:
             uid = self.utils.get_country_id(in_country)

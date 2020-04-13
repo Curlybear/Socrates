@@ -26,7 +26,7 @@ class Battle(commands.Cog, name="Battle"):
         if isinstance(error, (commands.ArgumentParsingError)):
             await ctx.send(error)
 
-    @commands.group(pass_context=True, aliases=["BATTLE"])
+    @commands.group(pass_context=True, aliases=["BATTLE"], enabled=False)
     async def battle(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.message.channel.send("Invalid battle command passed...")

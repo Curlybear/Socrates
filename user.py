@@ -220,7 +220,7 @@ class User(commands.Cog, name="User"):
 
         await ctx.message.channel.send("", embed=embed)
 
-    @commands.group(pass_context=True, aliases=["HISTORY"])
+    @commands.group(pass_context=True, aliases=["HISTORY"], enabled=False)
     async def history(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.message.channel.send("Invalid history command passed...")
