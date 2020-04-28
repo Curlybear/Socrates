@@ -497,8 +497,8 @@ class Battle(commands.Cog, name="Battle"):
                     battle_text = ""
                     type_text = ""
                     time_text = ""
-
                 battle = data["battles"][battle_id]
+
                 battle["started_since"] = data["time"] - battle["start"]
                 divisions = [
                     (
@@ -554,7 +554,11 @@ class Battle(commands.Cog, name="Battle"):
                 embed.add_field(name="Battle", value=battle_text, inline=True)
                 embed.add_field(name="Type", value=type_text, inline=True)
                 embed.add_field(name="Time", value=time_text, inline=True)
+                await ctx.message.channel.send("", embed=embed)
             else:
+                embed.add_field(name="Battle", value=battle_text, inline=True)
+                embed.add_field(name="Type", value=type_text, inline=True)
+                embed.add_field(name="Time", value=time_text, inline=True)
                 await ctx.message.channel.send("", embed=embed)
         else:
             await ctx.message.channel.send("No epics or full-scale ongoing right now")
