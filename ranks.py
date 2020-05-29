@@ -156,7 +156,6 @@ RANKS_GROUND = [
     "Legend XIV",
     "Legend XV",
     "Legend XVI",
-    "Legend XVI",
     "Legend XVII",
     "Legend XVIII",
     "Legend XIX",
