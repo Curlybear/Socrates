@@ -26,242 +26,6 @@ class Battle(commands.Cog, name="Battle"):
         if isinstance(error, (commands.ArgumentParsingError)):
             await ctx.send(error)
 
-    @commands.group(pass_context=True, aliases=["BATTLE"], enabled=False)
-    async def battle(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await ctx.message.channel.send("Invalid battle command passed...")
-
-    @battle.command(pass_context=True, aliases=["INFO"])
-    async def info(self, ctx, battle_id):
-        r = requests.get(
-            "https://api.erepublik-deutschland.de/"
-            + apiKey
-            + "/battles/details/"
-            + battle_id
-        )
-        obj = json.loads(r.text)
-
-        battle_info = obj["details"][battle_id]
-        battle_text = ""
-
-        battle_text += (
-            "**"
-            + battle_info["region"]["name"]
-            + "** (Round: "
-            + str(battle_info["general"]["round"])
-            + ")\n"
-        )
-        battle_text += (
-            self.utils.get_country_flag(battle_info["attacker"]["id"])
-            + " **"
-            + battle_info["attacker"]["name"]
-            + "** [*"
-            + str(battle_info["attacker"]["points"])
-            + "*] - "
-            + self.utils.get_country_flag(battle_info["defender"]["id"])
-            + " **"
-            + battle_info["defender"]["name"]
-            + "** [*"
-            + str(battle_info["defender"]["points"])
-            + "*]\n"
-        )
-        battle_text += (
-            "**[Division 1]**  ***Wall***: *"
-            + str(battle_info["wall"]["1"]["attacker"])[0:5]
-            + "* vs *"
-            + str(battle_info["wall"]["1"]["defender"])[0:5]
-            + "* - ***Domination***: *"
-            + str(battle_info["domination"]["1"]["attacker"])
-            + "* vs *"
-            + str(battle_info["domination"]["1"]["defender"])
-            + "*\n"
-        )
-        battle_text += (
-            "**[Division 2]**  ***Wall***: *"
-            + str(battle_info["wall"]["2"]["attacker"])[0:5]
-            + "* vs *"
-            + str(battle_info["wall"]["2"]["defender"])[0:5]
-            + "* - ***Domination***: *"
-            + str(battle_info["domination"]["2"]["attacker"])
-            + "* vs *"
-            + str(battle_info["domination"]["2"]["defender"])
-            + "*\n"
-        )
-        battle_text += (
-            "**[Division 3]**  ***Wall***: *"
-            + str(battle_info["wall"]["3"]["attacker"])[0:5]
-            + "* vs *"
-            + str(battle_info["wall"]["3"]["defender"])[0:5]
-            + "* - ***Domination***: *"
-            + str(battle_info["domination"]["3"]["attacker"])
-            + "* vs *"
-            + str(battle_info["domination"]["3"]["defender"])
-            + "*\n"
-        )
-        battle_text += (
-            "**[Division 4]**  ***Wall***: *"
-            + str(battle_info["wall"]["4"]["attacker"])[0:5]
-            + "* vs *"
-            + str(battle_info["wall"]["4"]["defender"])[0:5]
-            + "* - ***Domination***: *"
-            + str(battle_info["domination"]["4"]["attacker"])
-            + "* vs *"
-            + str(battle_info["domination"]["4"]["defender"])
-            + "*\n"
-        )
-
-        battle_text += (
-            "**Battle link**: https://www.erepublik.com/en/military/battlefield-new/"
-            + str(battle_id)
-            + "\n"
-        )
-
-        em = discord.Embed(
-            title="Battle information (" + battle_id + ")",
-            description=battle_text,
-            colour=0xBFF442,
-        )
-        await ctx.message.channel.send("", embed=em)
-
-    @battle.command(pass_context=True, aliases=["CO"])
-    async def co(self, ctx, battle_id):
-        r = requests.get(
-            "https://api.erepublik-deutschland.de/"
-            + apiKey
-            + "/battles/details/"
-            + battle_id
-        )
-        obj = json.loads(r.text)
-
-        battle_info = obj["details"][battle_id]
-        battle_info_co = obj["details"][battle_id]["combat_orders"]
-        battle_text = ""
-
-        battle_text += (
-            "**"
-            + battle_info["region"]["name"]
-            + "** (Round: "
-            + str(battle_info["general"]["round"])
-            + ")\n"
-        )
-        battle_text += (
-            self.utils.get_country_flag(battle_info["attacker"]["id"])
-            + " **"
-            + battle_info["attacker"]["name"]
-            + "** [*"
-            + str(battle_info["attacker"]["points"])
-            + "*] - "
-            + self.utils.get_country_flag(battle_info["defender"]["id"])
-            + " **"
-            + battle_info["defender"]["name"]
-            + "** [*"
-            + str(battle_info["defender"]["points"])
-            + "*]\n\n"
-        )
-        if "1" in battle_info_co:
-            battle_text += "**[Division 1]**\n"
-            if "1" in battle_info_co:
-                for co in battle_info_co["1"]:
-                    battle_text += (
-                        "Side: "
-                        + self.utils.get_country_flag(
-                            battle_info_co["1"][co]["country"]["id"]
-                        )
-                        + " **"
-                        + battle_info_co["1"][co]["country"]["name"]
-                        + "** - Reward: *"
-                        + str(battle_info_co["1"][co]["reward"])
-                        + "* - Budget: *"
-                        + str(battle_info_co["1"][co]["budget"])
-                        + "* - Wall: *"
-                        + str(battle_info_co["1"][co]["wall"])
-                        + "*\n"
-                    )
-            battle_text += "\n**[Division 2]**\n"
-            if "2" in battle_info_co:
-                for co in battle_info_co["2"]:
-                    battle_text += (
-                        "Side: "
-                        + self.utils.get_country_flag(
-                            battle_info_co["2"][co]["country"]["id"]
-                        )
-                        + " **"
-                        + battle_info_co["2"][co]["country"]["name"]
-                        + "** - Reward: *"
-                        + str(battle_info_co["2"][co]["reward"])
-                        + "* - Budget: *"
-                        + str(battle_info_co["2"][co]["budget"])
-                        + "* - Wall: *"
-                        + str(battle_info_co["2"][co]["wall"])
-                        + "*\n"
-                    )
-            battle_text += "\n**[Division 3]**\n"
-            if "3" in battle_info_co:
-                for co in battle_info_co["3"]:
-                    battle_text += (
-                        "Side: "
-                        + self.utils.get_country_flag(
-                            battle_info_co["3"][co]["country"]["id"]
-                        )
-                        + " **"
-                        + battle_info_co["3"][co]["country"]["name"]
-                        + "** - Reward: *"
-                        + str(battle_info_co["3"][co]["reward"])
-                        + "* - Budget: *"
-                        + str(battle_info_co["3"][co]["budget"])
-                        + "* - Wall: *"
-                        + str(battle_info_co["3"][co]["wall"])
-                        + "*\n"
-                    )
-            battle_text += "\n**[Division 4]**\n"
-            if "4" in battle_info_co:
-                for co in battle_info_co["4"]:
-                    battle_text += (
-                        "Side: "
-                        + self.utils.get_country_flag(
-                            battle_info_co["4"][co]["country"]["id"]
-                        )
-                        + " **"
-                        + battle_info_co["4"][co]["country"]["name"]
-                        + "** - Reward: *"
-                        + str(battle_info_co["4"][co]["reward"])
-                        + "* - Budget: *"
-                        + str(battle_info_co["4"][co]["budget"])
-                        + "* - Wall: *"
-                        + str(battle_info_co["4"][co]["wall"])
-                        + "*\n"
-                    )
-        if "11" in battle_info_co:
-            battle_text += "**[Aerial round]**\n"
-            for co in battle_info_co["11"]:
-                battle_text += (
-                    "Side: "
-                    + self.utils.get_country_flag(
-                        battle_info_co["11"][co]["country"]["id"]
-                    )
-                    + " **"
-                    + battle_info_co["11"][co]["country"]["name"]
-                    + "** - Reward: *"
-                    + str(battle_info_co["11"][co]["reward"])
-                    + "* - Budget: *"
-                    + str(battle_info_co["11"][co]["budget"])
-                    + "* - Wall: *"
-                    + str(battle_info_co["11"][co]["wall"])
-                    + "*\n"
-                )
-        battle_text += (
-            "\n**Battle link**: https://www.erepublik.com/en/military/battlefield-new/"
-            + str(battle_id)
-            + "\n"
-        )
-
-        em = discord.Embed(
-            title="Battle co information (" + battle_id + ")",
-            description=battle_text,
-            colour=0xBFF442,
-        )
-        await ctx.message.channel.send("", embed=em)
-
     @commands.command(pass_context=True, aliases=["RH"])
     async def rh(self, ctx, *, in_country):
         """Returns the list of occupied regions of a given country"""
@@ -562,6 +326,200 @@ class Battle(commands.Cog, name="Battle"):
                 await ctx.message.channel.send("", embed=embed)
         else:
             await ctx.message.channel.send("No epics or full-scale ongoing right now")
+
+    @commands.command(pass_context=True, aliases=["CO"])
+    async def co(self, ctx):
+        """Returns the list of current combat orders"""
+        r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
+        data = json.loads(r.text)
+        battle_ids = [
+            battle_id
+            for battle_id in data["battles"]
+            if any(
+                [
+                    True
+                    for div in data["battles"][battle_id]["div"]
+                    if data["battles"][battle_id]["div"][div]["co"]["inv"]
+                    or data["battles"][battle_id]["div"][div]["co"]["def"]
+                ]
+            )
+        ]
+
+        if len(battle_ids):
+            battle_text = ""
+            currency_text = ""
+            threshold_text = ""
+            embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+            embed.set_author(name="Combat Orders")
+            embed.set_footer(
+                text="Powered by https://erepublik.tools",
+                icon_url="https://erepublik.tools/assets/img/icon76.png",
+            )
+            for battle_id in battle_ids:
+                if (
+                    len(embed)
+                    + len(battle_text)
+                    + len(currency_text)
+                    + len(threshold_text)
+                    > 6000
+                ):
+                    await ctx.message.channel.send("", embed=embed)
+                    embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+                    embed.set_author(name="Combat orders")
+                    embed.set_footer(
+                        text="Powered by https://erepublik.tools",
+                        icon_url="https://erepublik.tools/assets/img/icon76.png",
+                    )
+                    embed.add_field(name="Battle", value=battle_text, inline=True)
+                    embed.add_field(
+                        name="Reward per 1M (Budget)", value=currency_text, inline=True
+                    )
+                    embed.add_field(
+                        name="Threshold (Current)", value=threshold_text, inline=True
+                    )
+                    battle_text = ""
+                    currency_text = ""
+                    threshold_text = ""
+
+                battle = data["battles"][battle_id]
+
+                divs_inv = [
+                    (div_id)
+                    for div_id in battle["div"]
+                    if battle["div"][div_id]["co"]["inv"]
+                ]
+
+                co_inv = []
+                ids_inv = []
+                for div in divs_inv:
+                    for co in battle["div"][div]["co"]["inv"]:
+                        if co["co_id"] not in ids_inv:
+                            ids_inv.append(co["co_id"])
+                            co_item = co
+                            co_item["div"] = battle["div"][div]["div"]
+                            co_item["div_id"] = div
+                            if battle["div"][div]["wall"]["for"] == battle["inv"]["id"]:
+                                co_item["wall"] = battle["div"][div]["wall"]["dom"]
+                            else:
+                                co_item["wall"] = 100 - float(
+                                    battle["div"][div]["wall"]["dom"]
+                                )
+                            co_inv.append(co_item)
+
+                divs_def = [
+                    (div_id)
+                    for div_id in battle["div"]
+                    if battle["div"][div_id]["co"]["def"]
+                ]
+
+                co_def = []
+                ids_def = []
+                for div in divs_def:
+                    for co in battle["div"][div]["co"]["def"]:
+                        if co["co_id"] not in ids_def:
+                            ids_def.append(co["co_id"])
+                            co_item = co
+                            co_item["div"] = battle["div"][div]["div"]
+                            co_item["div_id"] = div
+                            if battle["div"][div]["wall"]["for"] == battle["def"]["id"]:
+                                co_item["wall"] = battle["div"][div]["wall"]["dom"]
+                            else:
+                                co_item["wall"] = 100 - float(
+                                    battle["div"][div]["wall"]["dom"]
+                                )
+                            co_def.append(co_item)
+
+                for co in co_inv:
+                    battle_text_new = "{} D{} [{}](https://www.erepublik.com/en/military/battlefield/{}/{})\n".format(
+                        self.utils.get_country_flag(battle["inv"]["id"]),
+                        co["div"],
+                        battle["region"]["name"],
+                        battle["id"],
+                        co["div_id"],
+                    )
+                    if len(battle_text) + len(battle_text_new) > 1024:
+                        embed.add_field(name="Battle", value=battle_text, inline=True)
+                        embed.add_field(
+                            name="Reward per 1M (Budget)",
+                            value=currency_text,
+                            inline=True,
+                        )
+                        embed.add_field(
+                            name="Threshold (Current)",
+                            value=threshold_text,
+                            inline=True,
+                        )
+                        battle_text = battle_text_new
+                        currency_text = ""
+                        threshold_text = ""
+                    else:
+                        battle_text += battle_text_new
+                    currency_text = "{}{} ({})\n".format(
+                        currency_text, co["reward"], co["budget"]
+                    )
+
+                    threshold_text = "{}{}% ({:.2f}%)\n".format(
+                        threshold_text, co["threshold"], co["wall"],
+                    )
+
+                for co in co_def:
+                    battle_text_new = "{} D{} [{}](https://www.erepublik.com/en/military/battlefield/{}/{})\n".format(
+                        self.utils.get_country_flag(battle["def"]["id"]),
+                        co["div"],
+                        battle["region"]["name"],
+                        battle["id"],
+                        co["div_id"],
+                    )
+                    if len(battle_text) + len(battle_text_new) > 1024:
+                        embed.add_field(name="Battle", value=battle_text, inline=True)
+                        embed.add_field(name="Reward", value=currency_text, inline=True)
+                        embed.add_field(
+                            name="Threshold (Current)",
+                            value=threshold_text,
+                            inline=True,
+                        )
+                        battle_text = battle_text_new
+                        currency_text = ""
+                        threshold_text = ""
+                    else:
+                        battle_text += battle_text_new
+                    currency_text = "{}{} ({})\n".format(
+                        currency_text, co["reward"], co["budget"]
+                    )
+
+                    threshold_text = "{}{}% ({:.2f}%)\n".format(
+                        threshold_text, co["threshold"], co["wall"],
+                    )
+            if (
+                len(embed) + len(battle_text) + len(currency_text) + len(threshold_text)
+                > 6000
+            ):
+                await ctx.message.channel.send("", embed=embed)
+                embed = discord.Embed(colour=discord.Colour(0xCE2C19))
+                embed.set_author(name="Combat Orders")
+                embed.set_footer(
+                    text="Powered by https://erepublik.tools",
+                    icon_url="https://erepublik.tools/assets/img/icon76.png",
+                )
+                embed.add_field(name="Battle", value=battle_text, inline=True)
+                embed.add_field(
+                    name="Reward per 1M (Budget)", value=currency_text, inline=True
+                )
+                embed.add_field(
+                    name="Threshold (Current)", value=threshold_text, inline=True
+                )
+                await ctx.message.channel.send("", embed=embed)
+            else:
+                embed.add_field(name="Battle", value=battle_text, inline=True)
+                embed.add_field(
+                    name="Reward per 1M (Budget)", value=currency_text, inline=True
+                )
+                embed.add_field(
+                    name="Threshold (Current)", value=threshold_text, inline=True
+                )
+                await ctx.message.channel.send("", embed=embed)
+        else:
+            await ctx.message.channel.send("No combat orders right now")
 
 
 def setup(bot):
