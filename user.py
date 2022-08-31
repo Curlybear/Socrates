@@ -83,7 +83,7 @@ class User(commands.Cog, name="User"):
                         description=user_text,
                         colour=0x3D9900,
                     )
-                    await ctx.message.channel.send("", embed=em)
+                    await ctx.send("", embed=em)
 
                     def wait_reply(m):
                         return (
@@ -95,7 +95,7 @@ class User(commands.Cog, name="User"):
                         "message", check=wait_reply, timeout=20.0
                     )
                     if int(msg.content) >= number_of_matches or int(msg.content) < 1:
-                        await ctx.message.channel.send("Invalid choice")
+                        await ctx.send("Invalid choice")
                         return
                     user_id = int(obj["citizen"][int(msg.content) - 1]["id"])
                     r = requests.get(
@@ -127,14 +127,14 @@ class User(commands.Cog, name="User"):
                         description=user_text,
                         colour=0x3D9900,
                     )
-                    await ctx.message.channel.send("", embed=em)
+                    await ctx.send("", embed=em)
                     return
         return citizen
 
-    @commands.command(pass_context=True, aliases=["USER"])
-    async def user(self, ctx, *, in_value):
+    @commands.hybrid_command(aliases=["USER"])
+    async def user(self, ctx, *, value):
         """Returns information for the queried user. Input can be ID or username"""
-        citizen = await self.find_user(ctx, in_value)
+        citizen = await self.find_user(ctx, value)
 
         embed = discord.Embed(colour=discord.Colour(0xF5A623))
         embed.set_thumbnail(
@@ -219,14 +219,14 @@ class User(commands.Cog, name="User"):
                 inline=True,
             )
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.group(pass_context=True, aliases=["HISTORY"], enabled=False)
+    @commands.group(aliases=["HISTORY"], enabled=False)
     async def history(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.message.channel.send("Invalid history command passed...")
+            await ctx.send("Invalid history command passed...")
 
-    @history.command(pass_context=True, aliases=["CS"])
+    @history.command(aliases=["CS"])
     async def cs(self, ctx, *, in_value: str):
         user_text = ["", "", "", ""]
 
@@ -285,10 +285,10 @@ class User(commands.Cog, name="User"):
         i = 0
         while len(user_text[i]):
             embed.description = user_text[i]
-            await ctx.message.channel.send("", embed=embed)
+            await ctx.send("", embed=embed)
             i += 1
 
-    @history.command(pass_context=True, aliases=["NAME"])
+    @history.command(aliases=["NAME"])
     async def name(self, ctx, *, in_value: str):
         user_text = ["", "", "", ""]
 
@@ -343,10 +343,10 @@ class User(commands.Cog, name="User"):
         i = 0
         while len(user_text[i]):
             embed.description = user_text[i]
-            await ctx.message.channel.send("", embed=embed)
+            await ctx.send("", embed=embed)
             i += 1
 
-    @history.command(pass_context=True, aliases=["MU"])
+    @history.command(aliases=["MU"])
     async def mu(self, ctx, *, in_value: str):
         user_text = ["", "", "", ""]
 
@@ -411,10 +411,10 @@ class User(commands.Cog, name="User"):
         i = 0
         while len(user_text[i]):
             embed.description = user_text[i]
-            await ctx.message.channel.send("", embed=embed)
+            await ctx.send("", embed=embed)
             i += 1
 
-    @history.command(pass_context=True, aliases=["PARTY"])
+    @history.command(aliases=["PARTY"])
     async def party(self, ctx, *, in_value: str):
         user_text = ["", "", "", ""]
 
@@ -480,9 +480,8 @@ class User(commands.Cog, name="User"):
         i = 0
         while len(user_text[i]):
             embed.description = user_text[i]
-            await ctx.message.channel.send("", embed=embed)
+            await ctx.send("", embed=embed)
             i += 1
 
-
-def setup(bot):
-    bot.add_cog(User(bot))
+async def setup(bot):
+    await bot.add_cog(User(bot))

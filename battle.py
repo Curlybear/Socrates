@@ -26,12 +26,12 @@ class Battle(commands.Cog, name="Battle"):
         if isinstance(error, (commands.ArgumentParsingError)):
             await ctx.send(error)
 
-    @commands.command(pass_context=True, aliases=["RH"])
-    async def rh(self, ctx, *, in_country):
+    @commands.hybrid_command(aliases=["RH"])
+    async def rh(self, ctx, *, country):
         """Returns the list of occupied regions of a given country"""
         try:
-            if in_country != "World":
-                uid = self.utils.get_country_id(in_country)
+            if country != "World":
+                uid = self.utils.get_country_id(country)
                 country = self.utils.get_country_name(uid)
             region_text = ""
             time_text = ""
@@ -124,13 +124,13 @@ class Battle(commands.Cog, name="Battle"):
                     name="Under occupation since", value=time_text, inline=True
                 )
                 embed.add_field(name="Occupied by", value=occupied_text, inline=True)
-            await ctx.message.channel.send("", embed=embed)
+            await ctx.send("", embed=embed)
         except:
             raise commands.ArgumentParsingError(
-                "Country ***" + in_country + "*** not recognized"
+                "Country ***" + country + "*** not recognized"
             )
 
-    @commands.command(pass_context=True, aliases=["SH"])
+    @commands.hybrid_command(aliases=["SH"])
     async def sh(self, ctx):
         """Returns the list of the upcoming air rounds as well as air rounds with limited damage done."""
         r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
@@ -211,11 +211,11 @@ class Battle(commands.Cog, name="Battle"):
             embed.add_field(name="Battle", value=battle_text, inline=True)
             embed.add_field(name="Damage", value=damage_text, inline=True)
             embed.add_field(name="Time", value=time_text, inline=True)
-            await ctx.message.channel.send("", embed=embed)
+            await ctx.send("", embed=embed)
         else:
-            await ctx.message.channel.send("No SH available at the moment")
+            await ctx.send("No SH available at the moment")
 
-    @commands.command(pass_context=True, aliases=["EPIC"])
+    @commands.hybrid_command(aliases=["EPIC"])
     async def epic(self, ctx):
         """Returns the list of epic and fullscale battles"""
         r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
@@ -248,7 +248,7 @@ class Battle(commands.Cog, name="Battle"):
                     len(embed) + len(battle_text) + len(type_text) + len(time_text)
                     > 6000
                 ):
-                    await ctx.message.channel.send("", embed=embed)
+                    await ctx.send("", embed=embed)
                     embed = discord.Embed(colour=discord.Colour(0xCE2C19))
                     embed.set_author(name="Epics")
                     embed.set_footer(
@@ -308,7 +308,7 @@ class Battle(commands.Cog, name="Battle"):
                         battle["started_since"] % 60,
                     )
             if len(embed) + len(battle_text) + len(type_text) + len(time_text) > 6000:
-                await ctx.message.channel.send("", embed=embed)
+                await ctx.send("", embed=embed)
                 embed = discord.Embed(colour=discord.Colour(0xCE2C19))
                 embed.set_author(name="Epics")
                 embed.set_footer(
@@ -318,16 +318,16 @@ class Battle(commands.Cog, name="Battle"):
                 embed.add_field(name="Battle", value=battle_text, inline=True)
                 embed.add_field(name="Type", value=type_text, inline=True)
                 embed.add_field(name="Time", value=time_text, inline=True)
-                await ctx.message.channel.send("", embed=embed)
+                await ctx.send("", embed=embed)
             else:
                 embed.add_field(name="Battle", value=battle_text, inline=True)
                 embed.add_field(name="Type", value=type_text, inline=True)
                 embed.add_field(name="Time", value=time_text, inline=True)
-                await ctx.message.channel.send("", embed=embed)
+                await ctx.send("", embed=embed)
         else:
-            await ctx.message.channel.send("No epics or full-scale ongoing right now")
+            await ctx.send("No epics or full-scale ongoing right now")
 
-    @commands.command(pass_context=True, aliases=["CO"])
+    @commands.hybrid_command(aliases=["CO"])
     async def co(self, ctx):
         """Returns the list of current combat orders"""
         r = requests.get("https://www.erepublik.com/en/military/campaignsJson/list")
@@ -363,7 +363,7 @@ class Battle(commands.Cog, name="Battle"):
                     + len(threshold_text)
                     > 6000
                 ):
-                    await ctx.message.channel.send("", embed=embed)
+                    await ctx.send("", embed=embed)
                     embed = discord.Embed(colour=discord.Colour(0xCE2C19))
                     embed.set_author(name="Combat orders")
                     embed.set_footer(
@@ -494,7 +494,7 @@ class Battle(commands.Cog, name="Battle"):
                 len(embed) + len(battle_text) + len(currency_text) + len(threshold_text)
                 > 6000
             ):
-                await ctx.message.channel.send("", embed=embed)
+                await ctx.send("", embed=embed)
                 embed = discord.Embed(colour=discord.Colour(0xCE2C19))
                 embed.set_author(name="Combat Orders")
                 embed.set_footer(
@@ -508,7 +508,7 @@ class Battle(commands.Cog, name="Battle"):
                 embed.add_field(
                     name="Threshold (Current)", value=threshold_text, inline=True
                 )
-                await ctx.message.channel.send("", embed=embed)
+                await ctx.send("", embed=embed)
             else:
                 embed.add_field(name="Battle", value=battle_text, inline=True)
                 embed.add_field(
@@ -517,10 +517,10 @@ class Battle(commands.Cog, name="Battle"):
                 embed.add_field(
                     name="Threshold (Current)", value=threshold_text, inline=True
                 )
-                await ctx.message.channel.send("", embed=embed)
+                await ctx.send("", embed=embed)
         else:
-            await ctx.message.channel.send("No combat orders right now")
+            await ctx.send("No combat orders right now")
 
 
-def setup(bot):
-    bot.add_cog(Battle(bot))
+async def setup(bot):
+    await bot.add_cog(Battle(bot))

@@ -24,7 +24,7 @@ class Market(commands.Cog, name="Market"):
         if isinstance(error, (commands.ArgumentParsingError)):
             await ctx.send(error)
 
-    @commands.command(pass_context=True)
+    @commands.hybrid_command(pass_context=True)
     async def food(self, ctx, quality: str):
         """Returns a list of the best food offers for the given quality"""
         if not self.utils.is_number(quality):
@@ -46,7 +46,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -86,9 +86,9 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["WEAPONS"])
+    @commands.hybrid_command(aliases=["WEAPONS"])
     async def weapons(self, ctx, quality: str):
         """Returns a list of the best weapons offers for the given quality"""
         if not self.utils.is_number(quality):
@@ -111,7 +111,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -151,10 +151,10 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["AIRCRAFTS"])
-    async def aircrafts(self, ctx, quality: str = "1"):
+    @commands.hybrid_command(aliases=["AIRCRAFTS"])
+    async def aircrafts(self, ctx, quality: str):
         """Returns a list of the best aircrafts offers for the given quality"""
         if not self.utils.is_number(quality):
             raise commands.ArgumentParsingError(
@@ -176,7 +176,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -216,9 +216,9 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["HOUSES"])
+    @commands.hybrid_command(aliases=["HOUSES"])
     async def houses(self, ctx, quality: str):
         """Returns a list of the best houses offers for the given quality"""
         if not self.utils.is_number(quality):
@@ -241,7 +241,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -281,9 +281,9 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["TICKETS"])
+    @commands.hybrid_command(aliases=["TICKETS"])
     async def tickets(self, ctx, quality: str):
         """Returns a list of the best tickets offers for the given quality"""
         if not self.utils.is_number(quality):
@@ -306,7 +306,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -346,9 +346,9 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["FRM"])
+    @commands.hybrid_command(aliases=["FRM"])
     async def frm(self, ctx):
         """Returns a list of the best frm offers"""
 
@@ -365,7 +365,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -403,9 +403,9 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["WRM"])
+    @commands.hybrid_command(aliases=["WRM"])
     async def wrm(self, ctx):
         """Returns a list of the best wrm offers"""
 
@@ -422,7 +422,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -460,9 +460,9 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["HRM"])
+    @commands.hybrid_command(aliases=["HRM"])
     async def hrm(self, ctx):
         """Returns a list of the best hrm offers"""
 
@@ -479,7 +479,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -517,9 +517,9 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["ARM"])
+    @commands.hybrid_command(aliases=["ARM"])
     async def arm(self, ctx):
         """Returns a list of the best arm offers"""
 
@@ -536,7 +536,7 @@ class Market(commands.Cog, name="Market"):
         prices = ""
         links = ""
         if not offers:
-            await ctx.message.channel.send("No matching offers")
+            await ctx.send("No matching offers")
         else:
             for i in range(10):
                 flag = self.utils.get_country_flag(offers[i]["country_id"])
@@ -574,8 +574,8 @@ class Market(commands.Cog, name="Market"):
         embed.add_field(name="Price - Quantity", value=prices, inline=True)
         embed.add_field(name="Link", value=links, inline=True)
 
-        await ctx.message.channel.send("", embed=embed)
+        await ctx.send("", embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Market(bot))
+async def setup(bot):
+    await bot.add_cog(Market(bot))
