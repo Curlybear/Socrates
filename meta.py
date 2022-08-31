@@ -60,7 +60,7 @@ class Meta(commands.Cog):
     async def invite(self, ctx):
         """Return the link to invite Socrates to your own server"""
         await ctx.send(
-            "To invite me to your own server click the following link: <https://discordapp.com/oauth2/authorize?client_id=304725683995934723&scope=bot&permissions=0>"
+            "To invite me to your own server click the following link: <https://discord.com/api/oauth2/authorize?client_id=304725683995934723&permissions=2147485760&scope=applications.commands%20bot>"
         )
 
     @commands.hybrid_command(name="itfw")
